@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace HostsZ.Forms
 {
@@ -25,19 +21,21 @@ namespace HostsZ.Forms
 		{
 			InitializeComponent();
 		}
+
 		#region "Form"
+
 		private void MainZ_Load(object sender, EventArgs e)
 		{
-
 		}
 
 		private void MainZ_FormClosing(object sender, FormClosingEventArgs e)
 		{
-
 		}
-		#endregion
+
+		#endregion "Form"
 
 		#region "Controls"
+
 		private void tabber_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tabber.SelectedIndex == 1)
@@ -63,19 +61,20 @@ namespace HostsZ.Forms
 				setBlacklist = txBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 			}
 		}
-		#endregion
+
+		#endregion "Controls"
 
 		#region "Worker"
+
 		private void bgGenerate_DoWork(object sender, DoWorkEventArgs e)
 		{
-
 		}
 
 		private void bgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-
 		}
-		#endregion
+
+		#endregion "Worker"
 
 		private bool IsIPAddress(string input)
 		{
@@ -86,7 +85,6 @@ namespace HostsZ.Forms
 		{
 			return Regex.Match(input, string.Join("|", setLoopbacks.Select(x => @"\b^" + Regex.Escape(x) + "$")), RegexOptions.IgnoreCase).Success;
 		}
-
 	}
 
 	internal class SourceCache

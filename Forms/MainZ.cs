@@ -13,13 +13,13 @@ namespace HostsZ.Forms
 {
 	public partial class MainZ : Form
 	{
-		private bool[] SetOptions = { };
-		private string SetTargIP = "0.0.0.0";
-		private int SetDPL = 1;
-		private string[] SetLoopbacks = { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" };
-		private string[] SetSources = { };
-		private string[] SetWhitelist = { };
-		private string[] SetBlacklist = { };
+		private bool[] setOptions = { };
+		private string setTargIP = "0.0.0.0";
+		private int setDPL = 1;
+		private string[] setLoopbacks = { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" };
+		private string[] setSources = { };
+		private string[] setWhitelist = { };
+		private string[] setBlacklist = { };
 
 		public MainZ()
 		{
@@ -38,40 +38,40 @@ namespace HostsZ.Forms
 		#endregion
 
 		#region "Controls"
-		private void Tabber_SelectedIndexChanged(object sender, EventArgs e)
+		private void tabber_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (Tabber.SelectedIndex == 1)
+			if (tabber.SelectedIndex == 1)
 			{
 				Uri urx = null;
-				if (!Regex.Match(TxTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant).Success)
+				if (!Regex.Match(txTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant).Success)
 				{
-					TxTargetIP.Text = "0.0.0.0";
+					txTargetIP.Text = "0.0.0.0";
 				}
-				if (string.IsNullOrWhiteSpace(TxLoopbacks.Text))
+				if (string.IsNullOrWhiteSpace(txLoopbacks.Text))
 				{
-					TxLoopbacks.Text = string.Join(System.Environment.NewLine, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
+					txLoopbacks.Text = string.Join(System.Environment.NewLine, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
 				}
-				TxSources.Lines = TxSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
+				txSources.Lines = txSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
 
 				//init
-				SetOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1), ChlOptions.GetItemChecked(2), ChlOptions.GetItemChecked(3) };
-				SetTargIP = TxTargetIP.Text.Trim();
-				SetDPL = Convert.ToInt32(NumDomainPerLine.Value);
-				SetLoopbacks = TxLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-				SetSources = TxSources.Lines;
-				SetWhitelist = TxWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-				SetBlacklist = TxBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setOptions = new bool[] { chlOptions.GetItemChecked(0), chlOptions.GetItemChecked(1), chlOptions.GetItemChecked(2), chlOptions.GetItemChecked(3) };
+				setTargIP = txTargetIP.Text.Trim();
+				setDPL = Convert.ToInt32(numDomainPerLine.Value);
+				setLoopbacks = txLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setSources = txSources.Lines;
+				setWhitelist = txWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setBlacklist = txBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 			}
 		}
 		#endregion
 
 		#region "Worker"
-		private void BgGenerate_DoWork(object sender, DoWorkEventArgs e)
+		private void bgGenerate_DoWork(object sender, DoWorkEventArgs e)
 		{
 
 		}
 
-		private void BgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void bgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 
 		}
@@ -84,8 +84,9 @@ namespace HostsZ.Forms
 
 		private bool IsLoopback(string input)
 		{
-			return Regex.Match(input, string.Join("|", SetLoopbacks.Select(x => @"\b^" + Regex.Escape(x) + "$")), RegexOptions.IgnoreCase).Success;
+			return Regex.Match(input, string.Join("|", setLoopbacks.Select(x => @"\b^" + Regex.Escape(x) + "$")), RegexOptions.IgnoreCase).Success;
 		}
+
 	}
 
 	internal class SourceCache

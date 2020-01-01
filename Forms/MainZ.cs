@@ -26,39 +26,50 @@ namespace HostsZ.Forms
 
 		private void MainZ_Load(object sender, EventArgs e)
 		{
+			this.Icon = HostsZ.Properties.Resources.art;
+
+			//init
+			ChlOptions.SetItemChecked(1, true);
+			ChlOptions.SetItemChecked(2, true);
+			ChlOptions.SetItemChecked(3, true);
 		}
 
 		private void MainZ_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			if (BgGenerate.IsBusy)
+			{
+				if (MessageBox.Show("Are you sure to close the app?", "Are you?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+					e.Cancel = true;
+			}
 		}
 
 		#endregion "Form"
 
 		#region "Controls"
 
-		private void tabber_SelectedIndexChanged(object sender, EventArgs e)
+		private void Tabber_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (tabber.SelectedIndex == 1)
+			if (Tabber.SelectedIndex == 1)
 			{
 				Uri urx = null;
-				if (!Regex.Match(txTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant).Success)
+				if (!Regex.Match(TxTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant).Success)
 				{
-					txTargetIP.Text = "0.0.0.0";
+					TxTargetIP.Text = "0.0.0.0";
 				}
-				if (string.IsNullOrWhiteSpace(txLoopbacks.Text))
+				if (string.IsNullOrWhiteSpace(TxLoopbacks.Text))
 				{
-					txLoopbacks.Text = string.Join(System.Environment.NewLine, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
+					TxLoopbacks.Text = string.Join(System.Environment.NewLine, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
 				}
-				txSources.Lines = txSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
+				TxSources.Lines = TxSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
 
 				//init
-				setOptions = new bool[] { chlOptions.GetItemChecked(0), chlOptions.GetItemChecked(1), chlOptions.GetItemChecked(2), chlOptions.GetItemChecked(3) };
-				setTargIP = txTargetIP.Text.Trim();
-				setDPL = Convert.ToInt32(numDomainPerLine.Value);
-				setLoopbacks = txLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-				setSources = txSources.Lines;
-				setWhitelist = txWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-				setBlacklist = txBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1), ChlOptions.GetItemChecked(2), ChlOptions.GetItemChecked(3) };
+				setTargIP = TxTargetIP.Text.Trim();
+				setDPL = Convert.ToInt32(NumDomainPerLine.Value);
+				setLoopbacks = TxLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setSources = TxSources.Lines;
+				setWhitelist = TxWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+				setBlacklist = TxBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 			}
 		}
 
@@ -66,11 +77,11 @@ namespace HostsZ.Forms
 
 		#region "Worker"
 
-		private void bgGenerate_DoWork(object sender, DoWorkEventArgs e)
+		private void BgGenerate_DoWork(object sender, DoWorkEventArgs e)
 		{
 		}
 
-		private void bgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void BgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 		}
 

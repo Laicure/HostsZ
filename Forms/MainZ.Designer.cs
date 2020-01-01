@@ -28,43 +28,44 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tabber = new System.Windows.Forms.TabControl();
+			this.Tabber = new System.Windows.Forms.TabControl();
 			this.TabSettings = new System.Windows.Forms.TabPage();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
-			this.txBlacklist = new System.Windows.Forms.TextBox();
+			this.TxBlacklist = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
-			this.txWhitelist = new System.Windows.Forms.TextBox();
-			this.txSources = new System.Windows.Forms.TextBox();
-			this.txLoopbacks = new System.Windows.Forms.TextBox();
+			this.TxWhitelist = new System.Windows.Forms.TextBox();
+			this.TxSources = new System.Windows.Forms.TextBox();
+			this.TxLoopbacks = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.txTargetIP = new System.Windows.Forms.TextBox();
+			this.TxTargetIP = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
-			this.chlOptions = new System.Windows.Forms.CheckedListBox();
+			this.ChlOptions = new System.Windows.Forms.CheckedListBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.numDomainPerLine = new System.Windows.Forms.NumericUpDown();
+			this.NumDomainPerLine = new System.Windows.Forms.NumericUpDown();
 			this.TabGenerate = new System.Windows.Forms.TabPage();
-			this.bgGenerate = new System.ComponentModel.BackgroundWorker();
-			this.txLogs = new System.Windows.Forms.TextBox();
-			this.tabber.SuspendLayout();
+			this.LbGenerate = new System.Windows.Forms.Label();
+			this.TxLogs = new System.Windows.Forms.TextBox();
+			this.BgGenerate = new System.ComponentModel.BackgroundWorker();
+			this.Tabber.SuspendLayout();
 			this.TabSettings.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numDomainPerLine)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumDomainPerLine)).BeginInit();
 			this.TabGenerate.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// tabber
+			// Tabber
 			// 
-			this.tabber.Controls.Add(this.TabSettings);
-			this.tabber.Controls.Add(this.TabGenerate);
-			this.tabber.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabber.Location = new System.Drawing.Point(1, 1);
-			this.tabber.Name = "tabber";
-			this.tabber.SelectedIndex = 0;
-			this.tabber.Size = new System.Drawing.Size(532, 459);
-			this.tabber.TabIndex = 0;
-			this.tabber.TabStop = false;
-			this.tabber.SelectedIndexChanged += new System.EventHandler(this.tabber_SelectedIndexChanged);
+			this.Tabber.Controls.Add(this.TabSettings);
+			this.Tabber.Controls.Add(this.TabGenerate);
+			this.Tabber.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Tabber.Location = new System.Drawing.Point(1, 1);
+			this.Tabber.Name = "Tabber";
+			this.Tabber.SelectedIndex = 0;
+			this.Tabber.Size = new System.Drawing.Size(532, 459);
+			this.Tabber.TabIndex = 0;
+			this.Tabber.TabStop = false;
+			this.Tabber.SelectedIndexChanged += new System.EventHandler(this.Tabber_SelectedIndexChanged);
 			// 
 			// TabSettings
 			// 
@@ -72,18 +73,18 @@
 			this.TabSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TabSettings.Controls.Add(this.label5);
 			this.TabSettings.Controls.Add(this.label7);
-			this.TabSettings.Controls.Add(this.txBlacklist);
+			this.TabSettings.Controls.Add(this.TxBlacklist);
 			this.TabSettings.Controls.Add(this.label6);
-			this.TabSettings.Controls.Add(this.txWhitelist);
-			this.TabSettings.Controls.Add(this.txSources);
-			this.TabSettings.Controls.Add(this.txLoopbacks);
+			this.TabSettings.Controls.Add(this.TxWhitelist);
+			this.TabSettings.Controls.Add(this.TxSources);
+			this.TabSettings.Controls.Add(this.TxLoopbacks);
 			this.TabSettings.Controls.Add(this.label4);
 			this.TabSettings.Controls.Add(this.label3);
-			this.TabSettings.Controls.Add(this.txTargetIP);
+			this.TabSettings.Controls.Add(this.TxTargetIP);
 			this.TabSettings.Controls.Add(this.label2);
-			this.TabSettings.Controls.Add(this.chlOptions);
+			this.TabSettings.Controls.Add(this.ChlOptions);
 			this.TabSettings.Controls.Add(this.label1);
-			this.TabSettings.Controls.Add(this.numDomainPerLine);
+			this.TabSettings.Controls.Add(this.NumDomainPerLine);
 			this.TabSettings.Location = new System.Drawing.Point(4, 24);
 			this.TabSettings.Name = "TabSettings";
 			this.TabSettings.Size = new System.Drawing.Size(524, 431);
@@ -116,20 +117,20 @@
 			this.label7.Text = "Blacklist";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// txBlacklist
+			// TxBlacklist
 			// 
-			this.txBlacklist.BackColor = System.Drawing.Color.White;
-			this.txBlacklist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txBlacklist.ForeColor = System.Drawing.Color.Black;
-			this.txBlacklist.Location = new System.Drawing.Point(360, 230);
-			this.txBlacklist.Margin = new System.Windows.Forms.Padding(0);
-			this.txBlacklist.Multiline = true;
-			this.txBlacklist.Name = "txBlacklist";
-			this.txBlacklist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txBlacklist.Size = new System.Drawing.Size(163, 200);
-			this.txBlacklist.TabIndex = 13;
-			this.txBlacklist.TabStop = false;
-			this.txBlacklist.WordWrap = false;
+			this.TxBlacklist.BackColor = System.Drawing.Color.White;
+			this.TxBlacklist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxBlacklist.ForeColor = System.Drawing.Color.Black;
+			this.TxBlacklist.Location = new System.Drawing.Point(360, 230);
+			this.TxBlacklist.Margin = new System.Windows.Forms.Padding(0);
+			this.TxBlacklist.Multiline = true;
+			this.TxBlacklist.Name = "TxBlacklist";
+			this.TxBlacklist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.TxBlacklist.Size = new System.Drawing.Size(163, 200);
+			this.TxBlacklist.TabIndex = 13;
+			this.TxBlacklist.TabStop = false;
+			this.TxBlacklist.WordWrap = false;
 			// 
 			// label6
 			// 
@@ -144,52 +145,52 @@
 			this.label6.Text = "Whitelist";
 			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// txWhitelist
+			// TxWhitelist
 			// 
-			this.txWhitelist.BackColor = System.Drawing.Color.White;
-			this.txWhitelist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txWhitelist.ForeColor = System.Drawing.Color.Black;
-			this.txWhitelist.Location = new System.Drawing.Point(198, 230);
-			this.txWhitelist.Margin = new System.Windows.Forms.Padding(0);
-			this.txWhitelist.Multiline = true;
-			this.txWhitelist.Name = "txWhitelist";
-			this.txWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txWhitelist.Size = new System.Drawing.Size(163, 200);
-			this.txWhitelist.TabIndex = 11;
-			this.txWhitelist.TabStop = false;
-			this.txWhitelist.WordWrap = false;
+			this.TxWhitelist.BackColor = System.Drawing.Color.White;
+			this.TxWhitelist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxWhitelist.ForeColor = System.Drawing.Color.Black;
+			this.TxWhitelist.Location = new System.Drawing.Point(198, 230);
+			this.TxWhitelist.Margin = new System.Windows.Forms.Padding(0);
+			this.TxWhitelist.Multiline = true;
+			this.TxWhitelist.Name = "TxWhitelist";
+			this.TxWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.TxWhitelist.Size = new System.Drawing.Size(163, 200);
+			this.TxWhitelist.TabIndex = 11;
+			this.TxWhitelist.TabStop = false;
+			this.TxWhitelist.WordWrap = false;
 			// 
-			// txSources
+			// TxSources
 			// 
-			this.txSources.BackColor = System.Drawing.Color.White;
-			this.txSources.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txSources.ForeColor = System.Drawing.Color.Black;
-			this.txSources.Location = new System.Drawing.Point(198, 17);
-			this.txSources.Margin = new System.Windows.Forms.Padding(0);
-			this.txSources.Multiline = true;
-			this.txSources.Name = "txSources";
-			this.txSources.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txSources.Size = new System.Drawing.Size(325, 196);
-			this.txSources.TabIndex = 9;
-			this.txSources.TabStop = false;
-			this.txSources.WordWrap = false;
+			this.TxSources.BackColor = System.Drawing.Color.White;
+			this.TxSources.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxSources.ForeColor = System.Drawing.Color.Black;
+			this.TxSources.Location = new System.Drawing.Point(198, 17);
+			this.TxSources.Margin = new System.Windows.Forms.Padding(0);
+			this.TxSources.Multiline = true;
+			this.TxSources.Name = "TxSources";
+			this.TxSources.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.TxSources.Size = new System.Drawing.Size(325, 196);
+			this.TxSources.TabIndex = 9;
+			this.TxSources.TabStop = false;
+			this.TxSources.WordWrap = false;
 			// 
-			// txLoopbacks
+			// TxLoopbacks
 			// 
-			this.txLoopbacks.BackColor = System.Drawing.Color.White;
-			this.txLoopbacks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txLoopbacks.ForeColor = System.Drawing.Color.Black;
-			this.txLoopbacks.Location = new System.Drawing.Point(-1, 187);
-			this.txLoopbacks.Margin = new System.Windows.Forms.Padding(0);
-			this.txLoopbacks.Multiline = true;
-			this.txLoopbacks.Name = "txLoopbacks";
-			this.txLoopbacks.Size = new System.Drawing.Size(200, 243);
-			this.txLoopbacks.TabIndex = 7;
-			this.txLoopbacks.TabStop = false;
-			this.txLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
+			this.TxLoopbacks.BackColor = System.Drawing.Color.White;
+			this.TxLoopbacks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxLoopbacks.ForeColor = System.Drawing.Color.Black;
+			this.TxLoopbacks.Location = new System.Drawing.Point(-1, 187);
+			this.TxLoopbacks.Margin = new System.Windows.Forms.Padding(0);
+			this.TxLoopbacks.Multiline = true;
+			this.TxLoopbacks.Name = "TxLoopbacks";
+			this.TxLoopbacks.Size = new System.Drawing.Size(200, 243);
+			this.TxLoopbacks.TabIndex = 7;
+			this.TxLoopbacks.TabStop = false;
+			this.TxLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
     "\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
     "domain\r\n";
-			this.txLoopbacks.WordWrap = false;
+			this.TxLoopbacks.WordWrap = false;
 			// 
 			// label4
 			// 
@@ -201,7 +202,7 @@
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(200, 19);
 			this.label4.TabIndex = 6;
-			this.label4.Text = "Loopbacks Whitelist";
+			this.label4.Text = "Loopback Whitelist";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label3
@@ -217,20 +218,20 @@
 			this.label3.Text = "Domain per Line";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// txTargetIP
+			// TxTargetIP
 			// 
-			this.txTargetIP.BackColor = System.Drawing.Color.White;
-			this.txTargetIP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txTargetIP.ForeColor = System.Drawing.Color.Black;
-			this.txTargetIP.Location = new System.Drawing.Point(-1, 108);
-			this.txTargetIP.Margin = new System.Windows.Forms.Padding(0);
-			this.txTargetIP.Name = "txTargetIP";
-			this.txTargetIP.Size = new System.Drawing.Size(200, 23);
-			this.txTargetIP.TabIndex = 3;
-			this.txTargetIP.TabStop = false;
-			this.txTargetIP.Text = "0.0.0.0";
-			this.txTargetIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.txTargetIP.WordWrap = false;
+			this.TxTargetIP.BackColor = System.Drawing.Color.White;
+			this.TxTargetIP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxTargetIP.ForeColor = System.Drawing.Color.Black;
+			this.TxTargetIP.Location = new System.Drawing.Point(-1, 108);
+			this.TxTargetIP.Margin = new System.Windows.Forms.Padding(0);
+			this.TxTargetIP.Name = "TxTargetIP";
+			this.TxTargetIP.Size = new System.Drawing.Size(200, 23);
+			this.TxTargetIP.TabIndex = 3;
+			this.TxTargetIP.TabStop = false;
+			this.TxTargetIP.Text = "0.0.0.0";
+			this.TxTargetIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.TxTargetIP.WordWrap = false;
 			// 
 			// label2
 			// 
@@ -245,24 +246,24 @@
 			this.label2.Text = "Target IP";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// chlOptions
+			// ChlOptions
 			// 
-			this.chlOptions.BackColor = System.Drawing.Color.White;
-			this.chlOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.chlOptions.CheckOnClick = true;
-			this.chlOptions.ForeColor = System.Drawing.Color.Black;
-			this.chlOptions.FormattingEnabled = true;
-			this.chlOptions.Items.AddRange(new object[] {
+			this.ChlOptions.BackColor = System.Drawing.Color.White;
+			this.ChlOptions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.ChlOptions.CheckOnClick = true;
+			this.ChlOptions.ForeColor = System.Drawing.Color.Black;
+			this.ChlOptions.FormattingEnabled = true;
+			this.ChlOptions.Items.AddRange(new object[] {
             "Use tab instead of space",
             "Sort domains",
             "Show parse errors",
             "Use session cache"});
-			this.chlOptions.Location = new System.Drawing.Point(-1, 17);
-			this.chlOptions.Margin = new System.Windows.Forms.Padding(0);
-			this.chlOptions.Name = "chlOptions";
-			this.chlOptions.Size = new System.Drawing.Size(200, 74);
-			this.chlOptions.TabIndex = 1;
-			this.chlOptions.TabStop = false;
+			this.ChlOptions.Location = new System.Drawing.Point(-1, 17);
+			this.ChlOptions.Margin = new System.Windows.Forms.Padding(0);
+			this.ChlOptions.Name = "ChlOptions";
+			this.ChlOptions.Size = new System.Drawing.Size(200, 74);
+			this.ChlOptions.TabIndex = 1;
+			this.ChlOptions.TabStop = false;
 			// 
 			// label1
 			// 
@@ -277,29 +278,29 @@
 			this.label1.Text = "Options";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// numDomainPerLine
+			// NumDomainPerLine
 			// 
-			this.numDomainPerLine.BackColor = System.Drawing.Color.White;
-			this.numDomainPerLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.numDomainPerLine.ForeColor = System.Drawing.Color.Black;
-			this.numDomainPerLine.Location = new System.Drawing.Point(-1, 148);
-			this.numDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
-			this.numDomainPerLine.Maximum = new decimal(new int[] {
+			this.NumDomainPerLine.BackColor = System.Drawing.Color.White;
+			this.NumDomainPerLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.NumDomainPerLine.ForeColor = System.Drawing.Color.Black;
+			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 148);
+			this.NumDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
+			this.NumDomainPerLine.Maximum = new decimal(new int[] {
             9,
             0,
             0,
             0});
-			this.numDomainPerLine.Minimum = new decimal(new int[] {
+			this.NumDomainPerLine.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.numDomainPerLine.Name = "numDomainPerLine";
-			this.numDomainPerLine.Size = new System.Drawing.Size(200, 23);
-			this.numDomainPerLine.TabIndex = 5;
-			this.numDomainPerLine.TabStop = false;
-			this.numDomainPerLine.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.numDomainPerLine.Value = new decimal(new int[] {
+			this.NumDomainPerLine.Name = "NumDomainPerLine";
+			this.NumDomainPerLine.Size = new System.Drawing.Size(200, 23);
+			this.NumDomainPerLine.TabIndex = 5;
+			this.NumDomainPerLine.TabStop = false;
+			this.NumDomainPerLine.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.NumDomainPerLine.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -309,34 +310,49 @@
 			// 
 			this.TabGenerate.BackColor = System.Drawing.Color.White;
 			this.TabGenerate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TabGenerate.Controls.Add(this.txLogs);
+			this.TabGenerate.Controls.Add(this.LbGenerate);
+			this.TabGenerate.Controls.Add(this.TxLogs);
 			this.TabGenerate.Location = new System.Drawing.Point(4, 24);
 			this.TabGenerate.Name = "TabGenerate";
 			this.TabGenerate.Size = new System.Drawing.Size(524, 431);
 			this.TabGenerate.TabIndex = 1;
 			this.TabGenerate.Text = "Generate";
 			// 
-			// bgGenerate
+			// LbGenerate
 			// 
-			this.bgGenerate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgGenerate_DoWork);
-			this.bgGenerate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgGenerate_RunWorkerCompleted);
+			this.LbGenerate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbGenerate.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.LbGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbGenerate.ForeColor = System.Drawing.Color.Blue;
+			this.LbGenerate.Location = new System.Drawing.Point(-1, -1);
+			this.LbGenerate.Margin = new System.Windows.Forms.Padding(0);
+			this.LbGenerate.Name = "LbGenerate";
+			this.LbGenerate.Size = new System.Drawing.Size(524, 19);
+			this.LbGenerate.TabIndex = 11;
+			this.LbGenerate.Text = "Generate";
+			this.LbGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// txLogs
+			// TxLogs
 			// 
-			this.txLogs.BackColor = System.Drawing.Color.White;
-			this.txLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.txLogs.ForeColor = System.Drawing.Color.Black;
-			this.txLogs.Location = new System.Drawing.Point(53, 59);
-			this.txLogs.Margin = new System.Windows.Forms.Padding(0);
-			this.txLogs.MaxLength = 0;
-			this.txLogs.Multiline = true;
-			this.txLogs.Name = "txLogs";
-			this.txLogs.ReadOnly = true;
-			this.txLogs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txLogs.Size = new System.Drawing.Size(325, 196);
-			this.txLogs.TabIndex = 10;
-			this.txLogs.TabStop = false;
-			this.txLogs.WordWrap = false;
+			this.TxLogs.BackColor = System.Drawing.Color.White;
+			this.TxLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TxLogs.ForeColor = System.Drawing.Color.Black;
+			this.TxLogs.Location = new System.Drawing.Point(-1, 17);
+			this.TxLogs.Margin = new System.Windows.Forms.Padding(0);
+			this.TxLogs.MaxLength = 0;
+			this.TxLogs.Multiline = true;
+			this.TxLogs.Name = "TxLogs";
+			this.TxLogs.ReadOnly = true;
+			this.TxLogs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.TxLogs.Size = new System.Drawing.Size(524, 413);
+			this.TxLogs.TabIndex = 10;
+			this.TxLogs.TabStop = false;
+			this.TxLogs.WordWrap = false;
+			// 
+			// BgGenerate
+			// 
+			this.BgGenerate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BgGenerate_DoWork);
+			this.BgGenerate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgGenerate_RunWorkerCompleted);
 			// 
 			// MainZ
 			// 
@@ -344,7 +360,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(534, 461);
-			this.Controls.Add(this.tabber);
+			this.Controls.Add(this.Tabber);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ForeColor = System.Drawing.Color.Black;
@@ -358,10 +374,10 @@
 			this.Text = "HostsZ";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainZ_FormClosing);
 			this.Load += new System.EventHandler(this.MainZ_Load);
-			this.tabber.ResumeLayout(false);
+			this.Tabber.ResumeLayout(false);
 			this.TabSettings.ResumeLayout(false);
 			this.TabSettings.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numDomainPerLine)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.NumDomainPerLine)).EndInit();
 			this.TabGenerate.ResumeLayout(false);
 			this.TabGenerate.PerformLayout();
 			this.ResumeLayout(false);
@@ -370,24 +386,25 @@
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabber;
+		private System.Windows.Forms.TabControl Tabber;
 		private System.Windows.Forms.TabPage TabSettings;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TabPage TabGenerate;
-		private System.Windows.Forms.TextBox txTargetIP;
+		private System.Windows.Forms.TextBox TxTargetIP;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.CheckedListBox chlOptions;
+		private System.Windows.Forms.CheckedListBox ChlOptions;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.TextBox txBlacklist;
+		private System.Windows.Forms.TextBox TxBlacklist;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.TextBox txWhitelist;
-		private System.Windows.Forms.TextBox txSources;
+		private System.Windows.Forms.TextBox TxWhitelist;
+		private System.Windows.Forms.TextBox TxSources;
 		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TextBox txLoopbacks;
+		private System.Windows.Forms.TextBox TxLoopbacks;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.NumericUpDown numDomainPerLine;
-		private System.ComponentModel.BackgroundWorker bgGenerate;
-		private System.Windows.Forms.TextBox txLogs;
+		private System.Windows.Forms.NumericUpDown NumDomainPerLine;
+		private System.ComponentModel.BackgroundWorker BgGenerate;
+		private System.Windows.Forms.TextBox TxLogs;
+		private System.Windows.Forms.Label LbGenerate;
 	}
 }

@@ -331,6 +331,7 @@
 			this.LbGenerate.TabIndex = 11;
 			this.LbGenerate.Text = "Generate";
 			this.LbGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbGenerate.Click += new System.EventHandler(this.LbGenerate_Click);
 			// 
 			// TxLogs
 			// 

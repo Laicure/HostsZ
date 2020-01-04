@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.IO;
 
 namespace HostsZ.Forms
 {
@@ -120,7 +120,6 @@ namespace HostsZ.Forms
 						}
 					}
 				}
-
 			}
 		}
 

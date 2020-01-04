@@ -180,11 +180,11 @@
 			this.TxLoopbacks.BackColor = System.Drawing.Color.White;
 			this.TxLoopbacks.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TxLoopbacks.ForeColor = System.Drawing.Color.Black;
-			this.TxLoopbacks.Location = new System.Drawing.Point(-1, 187);
+			this.TxLoopbacks.Location = new System.Drawing.Point(-1, 169);
 			this.TxLoopbacks.Margin = new System.Windows.Forms.Padding(0);
 			this.TxLoopbacks.Multiline = true;
 			this.TxLoopbacks.Name = "TxLoopbacks";
-			this.TxLoopbacks.Size = new System.Drawing.Size(200, 243);
+			this.TxLoopbacks.Size = new System.Drawing.Size(200, 261);
 			this.TxLoopbacks.TabIndex = 7;
 			this.TxLoopbacks.TabStop = false;
 			this.TxLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
@@ -197,7 +197,7 @@
 			this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.label4.ForeColor = System.Drawing.Color.Purple;
-			this.label4.Location = new System.Drawing.Point(-1, 169);
+			this.label4.Location = new System.Drawing.Point(-1, 151);
 			this.label4.Margin = new System.Windows.Forms.Padding(0);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(200, 19);
@@ -210,7 +210,7 @@
 			this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.label3.ForeColor = System.Drawing.Color.Purple;
-			this.label3.Location = new System.Drawing.Point(-1, 130);
+			this.label3.Location = new System.Drawing.Point(-1, 112);
 			this.label3.Margin = new System.Windows.Forms.Padding(0);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(200, 19);
@@ -223,7 +223,7 @@
 			this.TxTargetIP.BackColor = System.Drawing.Color.White;
 			this.TxTargetIP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TxTargetIP.ForeColor = System.Drawing.Color.Black;
-			this.TxTargetIP.Location = new System.Drawing.Point(-1, 108);
+			this.TxTargetIP.Location = new System.Drawing.Point(-1, 90);
 			this.TxTargetIP.Margin = new System.Windows.Forms.Padding(0);
 			this.TxTargetIP.Name = "TxTargetIP";
 			this.TxTargetIP.Size = new System.Drawing.Size(200, 23);
@@ -238,7 +238,7 @@
 			this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.label2.ForeColor = System.Drawing.Color.Purple;
-			this.label2.Location = new System.Drawing.Point(-1, 90);
+			this.label2.Location = new System.Drawing.Point(-1, 72);
 			this.label2.Margin = new System.Windows.Forms.Padding(0);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(200, 19);
@@ -255,13 +255,12 @@
 			this.ChlOptions.FormattingEnabled = true;
 			this.ChlOptions.Items.AddRange(new object[] {
             "Use tab instead of space",
-            "Sort domains",
             "Show parse errors",
             "Use session cache"});
 			this.ChlOptions.Location = new System.Drawing.Point(-1, 17);
 			this.ChlOptions.Margin = new System.Windows.Forms.Padding(0);
 			this.ChlOptions.Name = "ChlOptions";
-			this.ChlOptions.Size = new System.Drawing.Size(200, 74);
+			this.ChlOptions.Size = new System.Drawing.Size(200, 56);
 			this.ChlOptions.TabIndex = 1;
 			this.ChlOptions.TabStop = false;
 			// 
@@ -283,7 +282,7 @@
 			this.NumDomainPerLine.BackColor = System.Drawing.Color.White;
 			this.NumDomainPerLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.NumDomainPerLine.ForeColor = System.Drawing.Color.Black;
-			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 148);
+			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 130);
 			this.NumDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
 			this.NumDomainPerLine.Maximum = new decimal(new int[] {
             9,

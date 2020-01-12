@@ -124,6 +124,7 @@
 			this.TxBlacklist.ForeColor = System.Drawing.Color.Black;
 			this.TxBlacklist.Location = new System.Drawing.Point(360, 230);
 			this.TxBlacklist.Margin = new System.Windows.Forms.Padding(0);
+			this.TxBlacklist.MaxLength = 0;
 			this.TxBlacklist.Multiline = true;
 			this.TxBlacklist.Name = "TxBlacklist";
 			this.TxBlacklist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -152,6 +153,7 @@
 			this.TxWhitelist.ForeColor = System.Drawing.Color.Black;
 			this.TxWhitelist.Location = new System.Drawing.Point(198, 230);
 			this.TxWhitelist.Margin = new System.Windows.Forms.Padding(0);
+			this.TxWhitelist.MaxLength = 0;
 			this.TxWhitelist.Multiline = true;
 			this.TxWhitelist.Name = "TxWhitelist";
 			this.TxWhitelist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -167,6 +169,7 @@
 			this.TxSources.ForeColor = System.Drawing.Color.Black;
 			this.TxSources.Location = new System.Drawing.Point(198, 17);
 			this.TxSources.Margin = new System.Windows.Forms.Padding(0);
+			this.TxSources.MaxLength = 0;
 			this.TxSources.Multiline = true;
 			this.TxSources.Name = "TxSources";
 			this.TxSources.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;

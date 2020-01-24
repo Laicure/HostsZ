@@ -48,6 +48,7 @@
 			this.LbGenerate = new System.Windows.Forms.Label();
 			this.TxLogs = new System.Windows.Forms.TextBox();
 			this.BgGenerate = new System.ComponentModel.BackgroundWorker();
+			this.LbClearCache = new System.Windows.Forms.Label();
 			this.Tabber.SuspendLayout();
 			this.TabSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumDomainPerLine)).BeginInit();
@@ -71,6 +72,7 @@
 			// 
 			this.TabSettings.BackColor = System.Drawing.Color.White;
 			this.TabSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.TabSettings.Controls.Add(this.LbClearCache);
 			this.TabSettings.Controls.Add(this.LbSources);
 			this.TabSettings.Controls.Add(this.LbBlacklist);
 			this.TabSettings.Controls.Add(this.TxBlacklist);
@@ -191,8 +193,8 @@
 			this.TxLoopbacks.TabIndex = 7;
 			this.TxLoopbacks.TabStop = false;
 			this.TxLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
-	"\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
-	"domain\r\n";
+    "\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
+    "domain\r\n";
 			this.TxLoopbacks.WordWrap = false;
 			// 
 			// label4
@@ -257,13 +259,12 @@
 			this.ChlOptions.ForeColor = System.Drawing.Color.Black;
 			this.ChlOptions.FormattingEnabled = true;
 			this.ChlOptions.Items.AddRange(new object[] {
-			"Use tab instead of space",
-			"Show parse errors",
-			"Use session cache"});
+            "Use tab instead of space",
+            "Show parse errors"});
 			this.ChlOptions.Location = new System.Drawing.Point(-1, 17);
 			this.ChlOptions.Margin = new System.Windows.Forms.Padding(0);
 			this.ChlOptions.Name = "ChlOptions";
-			this.ChlOptions.Size = new System.Drawing.Size(200, 56);
+			this.ChlOptions.Size = new System.Drawing.Size(200, 38);
 			this.ChlOptions.TabIndex = 1;
 			this.ChlOptions.TabStop = false;
 			// 
@@ -288,25 +289,25 @@
 			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 130);
 			this.NumDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
 			this.NumDomainPerLine.Maximum = new decimal(new int[] {
-			9,
-			0,
-			0,
-			0});
+            9,
+            0,
+            0,
+            0});
 			this.NumDomainPerLine.Minimum = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			this.NumDomainPerLine.Name = "NumDomainPerLine";
 			this.NumDomainPerLine.Size = new System.Drawing.Size(200, 23);
 			this.NumDomainPerLine.TabIndex = 5;
 			this.NumDomainPerLine.TabStop = false;
 			this.NumDomainPerLine.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.NumDomainPerLine.Value = new decimal(new int[] {
-			1,
-			0,
-			0,
-			0});
+            1,
+            0,
+            0,
+            0});
 			// 
 			// TabGenerate
 			// 
@@ -356,6 +357,21 @@
 			// 
 			this.BgGenerate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BgGenerate_DoWork);
 			this.BgGenerate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgGenerate_RunWorkerCompleted);
+			// 
+			// LbClearCache
+			// 
+			this.LbClearCache.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbClearCache.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.LbClearCache.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbClearCache.ForeColor = System.Drawing.Color.Blue;
+			this.LbClearCache.Location = new System.Drawing.Point(-1, 54);
+			this.LbClearCache.Margin = new System.Windows.Forms.Padding(0);
+			this.LbClearCache.Name = "LbClearCache";
+			this.LbClearCache.Size = new System.Drawing.Size(200, 19);
+			this.LbClearCache.TabIndex = 14;
+			this.LbClearCache.Text = "Clear Cached Sources";
+			this.LbClearCache.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbClearCache.Click += new System.EventHandler(this.LbClearCache_Click);
 			// 
 			// MainZ
 			// 
@@ -409,5 +425,6 @@
 		private System.ComponentModel.BackgroundWorker BgGenerate;
 		private System.Windows.Forms.TextBox TxLogs;
 		private System.Windows.Forms.Label LbGenerate;
+		private System.Windows.Forms.Label LbClearCache;
 	}
 }

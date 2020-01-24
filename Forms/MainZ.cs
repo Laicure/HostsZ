@@ -45,7 +45,6 @@ namespace HostsZ.Forms
 
 			//init
 			ChlOptions.SetItemChecked(1, true);
-			ChlOptions.SetItemChecked(2, true);
 		}
 
 		private void MainZ_FormClosing(object sender, FormClosingEventArgs e)
@@ -60,6 +59,18 @@ namespace HostsZ.Forms
 		#endregion "Form"
 
 		#region "Controls"
+
+		private void LbClearCache_Click(object sender, EventArgs e)
+		{
+			if (sourceCacheList.Count() > 1)
+			{
+				if (MessageBox.Show("Are you sure to clear cached sources?", "Are you?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+				{
+					sourceCacheList.Clear();
+					sourceCacheList.TrimExcess();
+				}
+			}
+		}
 
 		private void Tabber_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -83,20 +94,20 @@ namespace HostsZ.Forms
 				TxSources.Lines = TxSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
 
 				//init
-				setOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1), ChlOptions.GetItemChecked(2) };
+				setOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1) };
 				setTargIP = TxTargetIP.Text.Trim();
 				setDPL = Convert.ToInt32(NumDomainPerLine.Value);
 				setLoopbacks = TxLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 				setSources = TxSources.Lines;
 				setWhitelist = TxWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
 				setBlacklist = TxBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
-			}
 
-			if (setSources.Count() == 0 && Tabber.SelectedIndex == 1)
-			{
-				MessageBox.Show("No valid sources parsed!", "Nope, sorry. Nothing.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				Tabber.SelectedIndex = 0;
-				TxSources.Focus();
+				if (setSources.Count() == 0)
+				{
+					MessageBox.Show("No valid sources parsed!", "Nope, sorry. Nothing.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					Tabber.SelectedIndex = 0;
+					TxSources.Focus();
+				}
 			}
 		}
 
@@ -116,6 +127,7 @@ namespace HostsZ.Forms
 
 							LbGenerate.Text = "Generating...";
 							TxLogs.Text = LogDate() + "[Start]";
+							generated = "";
 							BgGenerate.RunWorkerAsync();
 						}
 					}
@@ -139,7 +151,7 @@ namespace HostsZ.Forms
 				string sourceUrl = setSources[i];
 
 				//use cache?
-				if (setOptions[2] && sourceCacheList.Any(x => x.URL == sourceUrl))
+				if (sourceCacheList.Any(x => x.URL == sourceUrl))
 				{
 					HashSet<string> sourceDomains = new HashSet<string>(sourceCacheList.Where(x => x.URL == sourceUrl).Select(x => x.Domains).FirstOrDefault());
 					downloadedUnified.UnionWith(sourceDomains);
@@ -147,6 +159,7 @@ namespace HostsZ.Forms
 				}
 				else
 				{
+					bool downloadError = false;
 					string downloadedData = "";
 					//download
 					TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] " + sourceUrl + vbCrLf + TxLogs.Text));
@@ -162,54 +175,47 @@ namespace HostsZ.Forms
 					{
 						TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + TxLogs.Text));
 						errCount += 1;
+						downloadError = true;
 					}
-
-					//parse
-					HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
-					string[] tempDomains = downloadedHash.ToArray();
-					downloadedHash.Clear();
-					downloadedHash.TrimExcess();
-					for (int y = 0; y <= tempDomains.Count() - 1; y++)
+					if (!downloadError)
 					{
-						Uri urxed = null;
-						string domStr = tempDomains[y];
-						bool inval = false;
-						try
+						//parse
+						HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+						string[] tempDomains = downloadedHash.ToArray();
+						downloadedHash.Clear();
+						downloadedHash.TrimExcess();
+						for (int y = 0; y <= tempDomains.Count() - 1; y++)
 						{
-							urxed = new Uri("http://" + domStr);
+							Uri urxed = null;
+							string domStr = tempDomains[y];
+							bool inval = false;
+							try
+							{
+								urxed = new Uri("http://" + domStr);
+							}
+							catch (Exception)
+							{
+								if (setOptions[1])
+									TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] " + domStr + vbCrLf + TxLogs.Text));
+								inval = true;
+								errCount += 1;
+							}
+							if (!inval)
+							{
+								string safeHost = urxed.DnsSafeHost;
+								if (!IsLoopback(safeHost))
+									downloadedHash.Add(safeHost);
+							}
 						}
-						catch (Exception)
-						{
-							if (setOptions[1])
-								TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] " + domStr + vbCrLf + TxLogs.Text));
-							inval = true;
-							errCount += 1;
-						}
-						if (!inval)
-						{
-							string safeHost = urxed.DnsSafeHost;
-							if (!IsLoopback(safeHost))
-								downloadedHash.Add(safeHost);
-						}
-					}
-					Array.Clear(tempDomains, 0, 0);
-					//add to cache
-					if (setOptions[2])
-					{
+						Array.Clear(tempDomains, 0, 0);
+						//add/re-add to cache
 						if (sourceCacheList.Any(x => x.URL == sourceUrl))
 							sourceCacheList.RemoveAll(x => x.URL == sourceUrl);
 						sourceCacheList.Add(new SourceCache { URL = sourceUrl, Domains = downloadedHash });
+						//unify
+						downloadedUnified.UnionWith(downloadedHash);
+						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + TxLogs.Text));
 					}
-					else
-					{
-						if (sourceCacheList.Count() > 1)
-						{
-							sourceCacheList.Clear();
-							sourceCacheList.TrimExcess();
-						}
-					}
-					downloadedUnified.UnionWith(downloadedHash);
-					TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + TxLogs.Text));
 				}
 			}
 
@@ -238,6 +244,12 @@ namespace HostsZ.Forms
 					downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success));
 					downloadedUnified.TrimExcess();
 				}
+			}
+
+			if (downloadedUnified.Count() == 0 & setBlacklist.Count() == 0)
+			{
+				TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Canceled] Nothing to generate!" + vbCrLf + TxLogs.Text));
+				return;
 			}
 
 			//add targetIP
@@ -279,9 +291,9 @@ namespace HostsZ.Forms
 				"# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
 				"# Generated using github.com/Laicure/HostsZ",
 				"",
-				"# Sources: " + setSources.Count().ToString("#,0", invarCulture)
+				"# Sources: " + sourceCacheList.Select(x => x.URL).Count().ToString("#,0", invarCulture)
 			};
-			finalList.AddRange(setSources.Select(x => "# " + x));
+			finalList.AddRange(sourceCacheList.Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
 			finalList.Add("");
 			finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
 			finalList.Add("");
@@ -313,7 +325,7 @@ namespace HostsZ.Forms
 			LbWhitelist.Text = "[" + setWhitelist.Count().ToString("#,0", invarCulture) + "] Whitelist";
 			LbBlacklist.Text = "[" + setBlacklist.Count().ToString("#,0", invarCulture) + "] Blacklist";
 
-			if (!string.IsNullOrWhiteSpace(generated))
+			if (generated != "")
 			{
 				string saveP = savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", invarCulture);
 				File.WriteAllText(saveP, generated, System.Text.Encoding.ASCII);

@@ -159,7 +159,6 @@ namespace HostsZ.Forms
 				}
 				else
 				{
-					bool downloadError = false;
 					string downloadedData = "";
 					//download
 					TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] " + sourceUrl + vbCrLf + TxLogs.Text));
@@ -175,9 +174,8 @@ namespace HostsZ.Forms
 					{
 						TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + TxLogs.Text));
 						errCount += 1;
-						downloadError = true;
 					}
-					if (!downloadError)
+					if (downloadedData !="")
 					{
 						//parse
 						HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
@@ -223,16 +221,78 @@ namespace HostsZ.Forms
 			if (setWhitelist.Count() > 0)
 			{
 				TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Clean] Whitelist" + vbCrLf + TxLogs.Text));
-				//remove non-wildcard
+				//remove non-wildcard				
 				downloadedUnified.ExceptWith(setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)));
 				downloadedUnified.TrimExcess();
 
 				//remove wildcarded
-				if (setWhitelist.Contains("*"))
+				if (setWhitelist.Where(x => x.Contains("*")).Count()>0)
 				{
 					string whiteRegex = string.Join("|", setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
-					downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success));
+					downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success).ToList());
 					downloadedUnified.TrimExcess();
+				}
+
+				//parse url whitelist
+				if (setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count()>0)
+				{
+
+					string[] whitelistSources = setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
+					for (int i = 0; i <= whitelistSources.Count() - 1; i++)
+					{
+						string whitelistUrl = whitelistSources[i];
+						string downloadedData = "";
+						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] Whitelist - " + whitelistUrl + vbCrLf + TxLogs.Text));
+						try
+						{
+							using (var clie = new System.Net.WebClient())
+							{
+								clie.UseDefaultCredentials = true;
+								downloadedData = clie.DownloadString(whitelistUrl);
+							}
+						}
+						catch (Exception ex)
+						{
+							TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + TxLogs.Text));
+							errCount += 1;
+						}
+
+						if (downloadedData != "")
+						{
+							//parse
+							HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+							string[] tempDomains = downloadedHash.ToArray();
+							downloadedHash.Clear();
+							downloadedHash.TrimExcess();
+							for (int y = 0; y <= tempDomains.Count() - 1; y++)
+							{
+								Uri urxed = null;
+								string domStr = tempDomains[y];
+								bool inval = false;
+								try
+								{
+									urxed = new Uri("http://" + domStr);
+								}
+								catch (Exception)
+								{
+									if (setOptions[1])
+										TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] Whitelist - " + domStr + vbCrLf + TxLogs.Text));
+									inval = true;
+									errCount += 1;
+								}
+								if (!inval)
+								{
+									string safeHost = urxed.DnsSafeHost;
+									if (!IsLoopback(safeHost))
+										downloadedHash.Add(safeHost);
+								}
+							}
+							Array.Clear(tempDomains, 0, 0);
+							//exclude
+							TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + TxLogs.Text));
+							downloadedUnified.ExceptWith(downloadedHash);
+						}
+					}
 				}
 			}
 

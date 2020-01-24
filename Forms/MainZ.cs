@@ -308,6 +308,11 @@ namespace HostsZ.Forms
 			LbGenerate.Text = "Generate";
 			TxLogs.Text = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + TxLogs.Text;
 
+			//set parsed Counts
+			LbSources.Text = "[" + setSources.Count().ToString("#,0", invarCulture) + "] Sources";
+			LbWhitelist.Text = "[" + setWhitelist.Count().ToString("#,0", invarCulture) + "] Whitelist";
+			LbBlacklist.Text = "[" + setBlacklist.Count().ToString("#,0", invarCulture) + "] Blacklist";
+
 			if (!string.IsNullOrWhiteSpace(generated))
 			{
 				string saveP = savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", invarCulture);

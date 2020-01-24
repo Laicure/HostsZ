@@ -30,10 +30,10 @@
 		{
 			this.Tabber = new System.Windows.Forms.TabControl();
 			this.TabSettings = new System.Windows.Forms.TabPage();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
+			this.LbSources = new System.Windows.Forms.Label();
+			this.LbBlacklist = new System.Windows.Forms.Label();
 			this.TxBlacklist = new System.Windows.Forms.TextBox();
-			this.label6 = new System.Windows.Forms.Label();
+			this.LbWhitelist = new System.Windows.Forms.Label();
 			this.TxWhitelist = new System.Windows.Forms.TextBox();
 			this.TxSources = new System.Windows.Forms.TextBox();
 			this.TxLoopbacks = new System.Windows.Forms.TextBox();
@@ -71,10 +71,10 @@
 			// 
 			this.TabSettings.BackColor = System.Drawing.Color.White;
 			this.TabSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TabSettings.Controls.Add(this.label5);
-			this.TabSettings.Controls.Add(this.label7);
+			this.TabSettings.Controls.Add(this.LbSources);
+			this.TabSettings.Controls.Add(this.LbBlacklist);
 			this.TabSettings.Controls.Add(this.TxBlacklist);
-			this.TabSettings.Controls.Add(this.label6);
+			this.TabSettings.Controls.Add(this.LbWhitelist);
 			this.TabSettings.Controls.Add(this.TxWhitelist);
 			this.TabSettings.Controls.Add(this.TxSources);
 			this.TabSettings.Controls.Add(this.TxLoopbacks);
@@ -91,31 +91,31 @@
 			this.TabSettings.TabIndex = 0;
 			this.TabSettings.Text = "Settings";
 			// 
-			// label5
+			// LbSources
 			// 
-			this.label5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.label5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label5.ForeColor = System.Drawing.Color.Purple;
-			this.label5.Location = new System.Drawing.Point(198, -1);
-			this.label5.Margin = new System.Windows.Forms.Padding(0);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(325, 19);
-			this.label5.TabIndex = 8;
-			this.label5.Text = "Sources";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbSources.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbSources.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbSources.ForeColor = System.Drawing.Color.Purple;
+			this.LbSources.Location = new System.Drawing.Point(198, -1);
+			this.LbSources.Margin = new System.Windows.Forms.Padding(0);
+			this.LbSources.Name = "LbSources";
+			this.LbSources.Size = new System.Drawing.Size(325, 19);
+			this.LbSources.TabIndex = 8;
+			this.LbSources.Text = "Sources";
+			this.LbSources.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// label7
+			// LbBlacklist
 			// 
-			this.label7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.label7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label7.ForeColor = System.Drawing.Color.Purple;
-			this.label7.Location = new System.Drawing.Point(360, 212);
-			this.label7.Margin = new System.Windows.Forms.Padding(0);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(163, 19);
-			this.label7.TabIndex = 12;
-			this.label7.Text = "Blacklist";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbBlacklist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbBlacklist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbBlacklist.ForeColor = System.Drawing.Color.Purple;
+			this.LbBlacklist.Location = new System.Drawing.Point(360, 212);
+			this.LbBlacklist.Margin = new System.Windows.Forms.Padding(0);
+			this.LbBlacklist.Name = "LbBlacklist";
+			this.LbBlacklist.Size = new System.Drawing.Size(163, 19);
+			this.LbBlacklist.TabIndex = 12;
+			this.LbBlacklist.Text = "Blacklist";
+			this.LbBlacklist.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// TxBlacklist
 			// 
@@ -133,18 +133,18 @@
 			this.TxBlacklist.TabStop = false;
 			this.TxBlacklist.WordWrap = false;
 			// 
-			// label6
+			// LbWhitelist
 			// 
-			this.label6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.label6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.label6.ForeColor = System.Drawing.Color.Purple;
-			this.label6.Location = new System.Drawing.Point(198, 212);
-			this.label6.Margin = new System.Windows.Forms.Padding(0);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(163, 19);
-			this.label6.TabIndex = 10;
-			this.label6.Text = "Whitelist";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbWhitelist.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbWhitelist.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbWhitelist.ForeColor = System.Drawing.Color.Purple;
+			this.LbWhitelist.Location = new System.Drawing.Point(198, 212);
+			this.LbWhitelist.Margin = new System.Windows.Forms.Padding(0);
+			this.LbWhitelist.Name = "LbWhitelist";
+			this.LbWhitelist.Size = new System.Drawing.Size(163, 19);
+			this.LbWhitelist.TabIndex = 10;
+			this.LbWhitelist.Text = "Whitelist";
+			this.LbWhitelist.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// TxWhitelist
 			// 
@@ -191,8 +191,8 @@
 			this.TxLoopbacks.TabIndex = 7;
 			this.TxLoopbacks.TabStop = false;
 			this.TxLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
-    "\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
-    "domain\r\n";
+	"\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
+	"domain\r\n";
 			this.TxLoopbacks.WordWrap = false;
 			// 
 			// label4
@@ -257,9 +257,9 @@
 			this.ChlOptions.ForeColor = System.Drawing.Color.Black;
 			this.ChlOptions.FormattingEnabled = true;
 			this.ChlOptions.Items.AddRange(new object[] {
-            "Use tab instead of space",
-            "Show parse errors",
-            "Use session cache"});
+			"Use tab instead of space",
+			"Show parse errors",
+			"Use session cache"});
 			this.ChlOptions.Location = new System.Drawing.Point(-1, 17);
 			this.ChlOptions.Margin = new System.Windows.Forms.Padding(0);
 			this.ChlOptions.Name = "ChlOptions";
@@ -288,25 +288,25 @@
 			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 130);
 			this.NumDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
 			this.NumDomainPerLine.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
+			9,
+			0,
+			0,
+			0});
 			this.NumDomainPerLine.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.NumDomainPerLine.Name = "NumDomainPerLine";
 			this.NumDomainPerLine.Size = new System.Drawing.Size(200, 23);
 			this.NumDomainPerLine.TabIndex = 5;
 			this.NumDomainPerLine.TabStop = false;
 			this.NumDomainPerLine.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.NumDomainPerLine.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// TabGenerate
 			// 
@@ -396,12 +396,12 @@
 		private System.Windows.Forms.TextBox TxTargetIP;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckedListBox ChlOptions;
-		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label LbBlacklist;
 		private System.Windows.Forms.TextBox TxBlacklist;
-		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label LbWhitelist;
 		private System.Windows.Forms.TextBox TxWhitelist;
 		private System.Windows.Forms.TextBox TxSources;
-		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label LbSources;
 		private System.Windows.Forms.TextBox TxLoopbacks;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;

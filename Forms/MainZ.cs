@@ -219,16 +219,6 @@ namespace HostsZ.Forms
 				}
 			}
 
-			//remove duplicate blacklist
-			HashSet<string> blacks = new HashSet<string>();
-			if (setBlacklist.Count() > 0)
-			{
-				TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Clean] Blacklist" + vbCrLf + TxLogs.Text));
-				blacks = new HashSet<string>(setBlacklist);
-				Array.Clear(setBlacklist, 0, 0);
-				blacks.ExceptWith(downloadedUnified);
-				setBlacklist = blacks.ToArray();
-			}
 			//remove whitelisted
 			if (setWhitelist.Count() > 0)
 			{
@@ -244,6 +234,17 @@ namespace HostsZ.Forms
 					downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success));
 					downloadedUnified.TrimExcess();
 				}
+			}
+
+			//remove duplicate blacklist
+			HashSet<string> blacks = new HashSet<string>();
+			if (setBlacklist.Count() > 0)
+			{
+				TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Clean] Blacklist" + vbCrLf + TxLogs.Text));
+				blacks = new HashSet<string>(setBlacklist);
+				Array.Clear(setBlacklist, 0, 0);
+				blacks.ExceptWith(downloadedUnified);
+				setBlacklist = blacks.ToArray();
 			}
 
 			if (downloadedUnified.Count() == 0 & setBlacklist.Count() == 0)

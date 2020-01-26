@@ -31,6 +31,7 @@ namespace HostsZ.Forms
 
 		//misc
 		private string logz = "";
+		private readonly string startUpPath = Application.StartupPath + @"\";
 		private Uri urx = null;
 		private readonly string vbCrLf = Environment.NewLine;
 		private readonly System.Globalization.CultureInfo invarCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -65,7 +66,6 @@ namespace HostsZ.Forms
 			string argg = Environment.CommandLine.Replace(Environment.GetCommandLineArgs()[0], "").Trim();
 			bool tabb = argg.Contains("-tab");
 			bool dpl = Regex.Match(argg, @"(\-dpl)([2-9])").Success;
-			string startUpPath = Application.StartupPath + @"\";
 
 			//file checks
 			if (!File.Exists(startUpPath + "source.txt"))
@@ -433,6 +433,16 @@ namespace HostsZ.Forms
 
 			//init
 			ChlOptions.SetItemChecked(1, true);
+
+			//Load data if present
+			if (File.Exists(startUpPath + "source.txt"))
+				TxSources.Text = File.ReadAllText(startUpPath + "source.txt");
+			if (File.Exists(startUpPath + "white.txt"))
+				TxWhitelist.Text = File.ReadAllText(startUpPath + "white.txt");
+			if (File.Exists(startUpPath + "black.txt"))
+				TxBlacklist.Text = File.ReadAllText(startUpPath + "black.txt");
+			if (File.Exists(startUpPath + "loopback.txt"))
+				TxLoopbacks.Text = File.ReadAllText(startUpPath + "loopback.txt");
 		}
 
 		private void MainZ_FormClosing(object sender, FormClosingEventArgs e)

@@ -5,9 +5,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Windows.Forms;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace HostsZ.Forms
 {
@@ -41,6 +41,7 @@ namespace HostsZ.Forms
 		}
 
 		#region "Auto"
+
 		protected override void SetVisibleCore(bool value)
 		{
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
@@ -420,6 +421,7 @@ namespace HostsZ.Forms
 			//success exit
 			Environment.Exit(exitcod);
 		}
+
 		#endregion "Auto"
 
 		#region "Form"

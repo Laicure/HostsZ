@@ -65,23 +65,24 @@ namespace HostsZ.Forms
 			string argg = Environment.CommandLine.Replace(Environment.GetCommandLineArgs()[0], "").Trim();
 			bool tabb = argg.Contains("-tab");
 			bool dpl = Regex.Match(argg, @"(\-dpl)([2-9])").Success;
+			string startUpPath = Application.StartupPath + @"\";
 
 			//file checks
-			if (!File.Exists("source.txt"))
-				File.WriteAllText("source.txt", "", Encoding.ASCII);
-			if (!File.Exists("white.txt"))
-				File.WriteAllText("white.txt", "", Encoding.ASCII);
-			if (!File.Exists("black.txt"))
-				File.WriteAllText("black.txt", "", Encoding.ASCII);
-			if (!File.Exists("loopback.txt"))
-				File.WriteAllLines("loopback.txt", new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" }, Encoding.ASCII);
+			if (!File.Exists(startUpPath + "source.txt"))
+				File.WriteAllText(startUpPath + "source.txt", "", Encoding.ASCII);
+			if (!File.Exists(startUpPath + "white.txt"))
+				File.WriteAllText(startUpPath + "white.txt", "", Encoding.ASCII);
+			if (!File.Exists(startUpPath + "black.txt"))
+				File.WriteAllText(startUpPath + "black.txt", "", Encoding.ASCII);
+			if (!File.Exists(startUpPath + "loopback.txt"))
+				File.WriteAllLines(startUpPath + "loopback.txt", new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" }, Encoding.ASCII);
 
 			//source check
-			setSources = File.ReadAllLines("source.txt").Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
+			setSources = File.ReadAllLines(startUpPath + "source.txt").Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
 			//exit for invalid source
 			if (setSources.Count() == 0)
 			{
-				File.WriteAllText("log.txt", LogDate() + "[Init] No valid sources parsed!", Encoding.ASCII);
+				File.WriteAllText(startUpPath + "log.txt", LogDate() + "[Init] No valid sources parsed!", Encoding.ASCII);
 				Environment.Exit(3);
 				return;
 			}
@@ -89,9 +90,9 @@ namespace HostsZ.Forms
 			setOptions = new bool[] { tabb, true };
 			setTargIP = "0.0.0.0";
 			setDPL = (dpl ? Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2")) : 1);
-			setLoopbacks = File.ReadAllLines("loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-			setWhitelist = File.ReadAllLines("white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
-			setBlacklist = File.ReadAllLines("black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
+			setLoopbacks = File.ReadAllLines(startUpPath + "loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+			setWhitelist = File.ReadAllLines(startUpPath + "white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
+			setBlacklist = File.ReadAllLines(startUpPath + "black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
 
 			//start
 			logz = LogDate() + "[Start]";
@@ -416,7 +417,7 @@ namespace HostsZ.Forms
 			}
 
 			//write to logs
-			File.WriteAllText("log.txt", logz, Encoding.ASCII);
+			File.WriteAllText(startUpPath + "log.txt", logz, Encoding.ASCII);
 
 			//success exit
 			Environment.Exit(exitcod);

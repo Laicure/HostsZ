@@ -87,7 +87,7 @@ namespace HostsZ.Forms
 			//init
 			setOptions = new bool[] { tabb, true };
 			setTargIP = "0.0.0.0";
-			setDPL = Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2"));
+			setDPL = (dpl ? Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2")) : 1);
 			setLoopbacks = File.ReadAllLines("loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 			setWhitelist = File.ReadAllLines("white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
 			setBlacklist = File.ReadAllLines("black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
@@ -400,6 +400,7 @@ namespace HostsZ.Forms
 				try
 				{
 					File.WriteAllText(@"C:\Windows\System32\drivers\etc\hosts", generated, System.Text.Encoding.ASCII);
+					logz = LogDate() + @"[End] Extracted to C:\Windows\System32\drivers\etc\hosts" + vbCrLf + logz;
 				}
 				catch (Exception ex)
 				{

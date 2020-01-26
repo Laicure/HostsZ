@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -164,7 +165,7 @@ namespace HostsZ.Forms
 					TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] " + sourceUrl + vbCrLf + TxLogs.Text));
 					try
 					{
-						using (var clie = new System.Net.WebClient())
+						using (var clie = new WebClient())
 						{
 							clie.UseDefaultCredentials = true;
 							downloadedData = clie.DownloadString(sourceUrl);
@@ -244,7 +245,7 @@ namespace HostsZ.Forms
 						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] Whitelist - " + whitelistUrl + vbCrLf + TxLogs.Text));
 						try
 						{
-							using (var clie = new System.Net.WebClient())
+							using (var clie = new WebClient())
 							{
 								clie.UseDefaultCredentials = true;
 								downloadedData = clie.DownloadString(whitelistUrl);
@@ -316,7 +317,7 @@ namespace HostsZ.Forms
 						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] Blacklist - " + blacklistUrl + vbCrLf + TxLogs.Text));
 						try
 						{
-							using (var clie = new System.Net.WebClient())
+							using (var clie = new WebClient())
 							{
 								clie.UseDefaultCredentials = true;
 								downloadedData = clie.DownloadString(blacklistUrl);

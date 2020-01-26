@@ -5,8 +5,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace HostsZ.Forms
 {
@@ -29,6 +30,7 @@ namespace HostsZ.Forms
 		private string generated = "";
 
 		//misc
+		private string logz = "";
 		private Uri urx = null;
 		private readonly string vbCrLf = Environment.NewLine;
 		private readonly System.Globalization.CultureInfo invarCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -37,6 +39,387 @@ namespace HostsZ.Forms
 		{
 			InitializeComponent();
 		}
+
+		#region "Auto"
+		protected override void SetVisibleCore(bool value)
+		{
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+			if (!this.IsHandleCreated)
+			{
+				this.CreateHandle();
+				if (Environment.GetCommandLineArgs().LongLength > 1 && Environment.CommandLine.Contains("-auto"))
+				{
+					value = false;
+					Autoo();
+				}
+				else
+					value = true;
+			}
+			base.SetVisibleCore(value);
+		}
+
+		private void Autoo()
+		{
+			//init
+			string argg = Environment.CommandLine.Replace(Environment.GetCommandLineArgs()[0], "").Trim();
+			bool tabb = argg.Contains("-tab");
+			bool dpl = Regex.Match(argg, @"(\-dpl)([2-9])").Success;
+
+			//file checks
+			if (!File.Exists("source.txt"))
+				File.WriteAllText("source.txt", "", Encoding.ASCII);
+			if (!File.Exists("white.txt"))
+				File.WriteAllText("white.txt", "", Encoding.ASCII);
+			if (!File.Exists("black.txt"))
+				File.WriteAllText("black.txt", "", Encoding.ASCII);
+			if (!File.Exists("loopback.txt"))
+				File.WriteAllLines("loopback.txt", new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" }, Encoding.ASCII);
+
+			//source check
+			setSources = File.ReadAllLines("source.txt").Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
+			//exit for invalid source
+			if (setSources.Count() == 0)
+			{
+				File.WriteAllText("log.txt", LogDate() + "[Init] No valid sources parsed!", Encoding.ASCII);
+				Environment.Exit(3);
+				return;
+			}
+			//init
+			setOptions = new bool[] { tabb, true };
+			setTargIP = "0.0.0.0";
+			setDPL = Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2"));
+			setLoopbacks = File.ReadAllLines("loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+			setWhitelist = File.ReadAllLines("white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
+			setBlacklist = File.ReadAllLines("black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
+
+			//start
+			logz = LogDate() + "[Start]";
+			generated = "";
+			BgGenerate.RunWorkerAsync();
+
+			startExec = DateTime.UtcNow;
+			errCount = 0;
+			HashSet<string> downloadedUnified = new HashSet<string>();
+
+			//download sources
+			for (int i = 0; i <= setSources.Count() - 1; i++)
+			{
+				string sourceUrl = setSources[i];
+
+				//use cache?
+				if (sourceCacheList.Any(x => x.URL == sourceUrl))
+				{
+					HashSet<string> sourceDomains = new HashSet<string>(sourceCacheList.Where(x => x.URL == sourceUrl).Select(x => x.Domains).FirstOrDefault());
+					downloadedUnified.UnionWith(sourceDomains);
+					logz = LogDate() + "[Cached] (" + sourceDomains.Count.ToString("#,0", invarCulture) + ") " + sourceUrl + vbCrLf + logz;
+				}
+				else
+				{
+					string downloadedData = "";
+					//download
+					logz = LogDate() + "[Fetch] " + sourceUrl + vbCrLf + logz;
+					try
+					{
+						using (var clie = new WebClient())
+						{
+							clie.UseDefaultCredentials = true;
+							downloadedData = clie.DownloadString(sourceUrl);
+						}
+					}
+					catch (Exception ex)
+					{
+						logz = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + logz;
+						errCount += 1;
+					}
+					if (downloadedData != "")
+					{
+						//parse
+						HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+						string[] tempDomains = downloadedHash.ToArray();
+						downloadedHash.Clear();
+						downloadedHash.TrimExcess();
+						for (int y = 0; y <= tempDomains.Count() - 1; y++)
+						{
+							Uri urxed = null;
+							string domStr = tempDomains[y];
+							bool inval = false;
+							try
+							{
+								urxed = new Uri("http://" + domStr);
+							}
+							catch (Exception)
+							{
+								if (setOptions[1])
+									logz = "> [Invalid] " + domStr + vbCrLf + logz;
+								inval = true;
+								errCount += 1;
+							}
+							if (!inval)
+							{
+								string safeHost = urxed.DnsSafeHost;
+								if (!IsLoopback(safeHost))
+									downloadedHash.Add(safeHost);
+							}
+						}
+						Array.Clear(tempDomains, 0, 0);
+						//add/re-add to cache
+						if (sourceCacheList.Any(x => x.URL == sourceUrl))
+							sourceCacheList.RemoveAll(x => x.URL == sourceUrl);
+						sourceCacheList.Add(new SourceCache { URL = sourceUrl, Domains = downloadedHash });
+						//unify
+						downloadedUnified.UnionWith(downloadedHash);
+						logz = LogDate() + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + logz;
+					}
+				}
+			}
+
+			//remove whitelisted
+			if (setWhitelist.Count() > 0)
+			{
+				logz = LogDate() + "[Clean] Whitelist" + vbCrLf + logz;
+				//remove non-wildcard
+				downloadedUnified.ExceptWith(setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)));
+				downloadedUnified.TrimExcess();
+
+				//remove wildcarded
+				if (setWhitelist.Where(x => x.Contains("*")).Count() > 0)
+				{
+					string whiteRegex = string.Join("|", setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
+					downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success).ToList());
+					downloadedUnified.TrimExcess();
+				}
+
+				//parse url whitelist
+				if (setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
+				{
+					string[] whitelistSources = setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
+					for (int i = 0; i <= whitelistSources.Count() - 1; i++)
+					{
+						string whitelistUrl = whitelistSources[i];
+						string downloadedData = "";
+						logz = LogDate() + "[Fetch] Whitelist - " + whitelistUrl + vbCrLf + logz;
+						try
+						{
+							using (var clie = new WebClient())
+							{
+								clie.UseDefaultCredentials = true;
+								downloadedData = clie.DownloadString(whitelistUrl);
+							}
+						}
+						catch (Exception ex)
+						{
+							logz = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + logz;
+							errCount += 1;
+						}
+
+						if (downloadedData != "")
+						{
+							//parse
+							HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+							string[] tempDomains = downloadedHash.ToArray();
+							downloadedHash.Clear();
+							downloadedHash.TrimExcess();
+							for (int y = 0; y <= tempDomains.Count() - 1; y++)
+							{
+								Uri urxed = null;
+								string domStr = tempDomains[y];
+								bool inval = false;
+								try
+								{
+									urxed = new Uri("http://" + domStr);
+								}
+								catch (Exception)
+								{
+									if (setOptions[1])
+										logz = "> [Invalid] Whitelist - " + domStr + vbCrLf + logz;
+									inval = true;
+									errCount += 1;
+								}
+								if (!inval)
+								{
+									string safeHost = urxed.DnsSafeHost;
+									if (!IsLoopback(safeHost))
+										downloadedHash.Add(safeHost);
+								}
+							}
+							Array.Clear(tempDomains, 0, 0);
+							//exclude
+							logz = LogDate() + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + logz;
+							downloadedUnified.ExceptWith(downloadedHash);
+						}
+					}
+				}
+			}
+
+			//remove duplicate blacklist
+			HashSet<string> blacks = new HashSet<string>();
+			if (setBlacklist.Count() > 0)
+			{
+				logz = LogDate() + "[Clean] Blacklist" + vbCrLf + logz;
+				blacks = new HashSet<string>(setBlacklist);
+				Array.Clear(setBlacklist, 0, 0);
+				blacks.ExceptWith(downloadedUnified);
+				setBlacklist = blacks.ToArray();
+
+				//parse url blacklist
+				if (setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
+				{
+					string[] blacklistSources = setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
+					for (int i = 0; i <= blacklistSources.Count() - 1; i++)
+					{
+						string blacklistUrl = blacklistSources[i];
+						string downloadedData = "";
+						logz = LogDate() + "[Fetch] Blacklist - " + blacklistUrl + vbCrLf + logz;
+						try
+						{
+							using (var clie = new WebClient())
+							{
+								clie.UseDefaultCredentials = true;
+								downloadedData = clie.DownloadString(blacklistUrl);
+							}
+						}
+						catch (Exception ex)
+						{
+							logz = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + logz;
+							errCount += 1;
+						}
+
+						if (downloadedData != "")
+						{
+							//parse
+							HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+							string[] tempDomains = downloadedHash.ToArray();
+							downloadedHash.Clear();
+							downloadedHash.TrimExcess();
+							for (int y = 0; y <= tempDomains.Count() - 1; y++)
+							{
+								Uri urxed = null;
+								string domStr = tempDomains[y];
+								bool inval = false;
+								try
+								{
+									urxed = new Uri("http://" + domStr);
+								}
+								catch (Exception)
+								{
+									if (setOptions[1])
+										logz = "> [Invalid] Blacklist - " + domStr + vbCrLf + logz;
+									inval = true;
+									errCount += 1;
+								}
+								if (!inval)
+								{
+									string safeHost = urxed.DnsSafeHost;
+									if (!IsLoopback(safeHost))
+										downloadedHash.Add(safeHost);
+								}
+							}
+							Array.Clear(tempDomains, 0, 0);
+							//exclude
+							logz = LogDate() + "[Parsed] Blacklist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + logz;
+							blacks.UnionWith(downloadedHash);
+						}
+					}
+				}
+			}
+
+			if (downloadedUnified.Count() == 0 & blacks.Count() == 0)
+			{
+				logz = LogDate() + "[Canceled] Nothing to generate!" + vbCrLf + logz;
+				return;
+			}
+
+			//add targetIP
+			string tabSpace = ((setOptions[0]) ? "\t" : " ").ToString();
+			logz = LogDate() + "[Merge] Target IP and " + ((setOptions[0]) ? "Tab" : "Whitespace").ToString() + vbCrLf + logz;
+			if (setDPL == 1)
+			{
+				downloadedUnified = new HashSet<string>(downloadedUnified.Select(x => setTargIP + tabSpace + x));
+			}
+			else
+			{
+				string[] unifiedTemp = downloadedUnified.ToArray();
+				int unifiedTempCountIndex = unifiedTemp.Count() - 1;
+				downloadedUnified.Clear();
+				downloadedUnified.TrimExcess();
+				string artemp = "";
+				for (int i = 0; i <= unifiedTempCountIndex; i++)
+				{
+					artemp = artemp + " " + unifiedTemp[i];
+					if ((i + 1) % setDPL == 0)
+					{
+						downloadedUnified.Add(setTargIP + tabSpace + artemp);
+						artemp = "";
+					}
+					else if (i == unifiedTempCountIndex)
+					{
+						downloadedUnified.Add(setTargIP + tabSpace + artemp);
+						artemp = "";
+					}
+				}
+				Array.Clear(unifiedTemp, 0, 0);
+			}
+
+			//finalize
+			logz = LogDate() + "[Merge] Finalize list" + vbCrLf + logz;
+			List<string> finalList = new List<string>
+			{
+				"# Entries: " + downloadedUnified.Count().ToString("#,0", invarCulture),
+				"# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
+				"# Generated using github.com/Laicure/HostsZ",
+				"",
+				"# Sources: " + sourceCacheList.Select(x => x.URL).Count().ToString("#,0", invarCulture)
+			};
+			finalList.AddRange(sourceCacheList.Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
+			finalList.Add("");
+			finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
+			finalList.Add("");
+			if (blacks.Count() > 0)
+			{
+				finalList.Add("# Blacklist");
+				finalList.AddRange(blacks.Select(x => setTargIP + tabSpace + x));
+				finalList.Add("");
+			}
+			finalList.Add("# Start");
+			finalList.AddRange(downloadedUnified);
+			finalList.Add("# End");
+			finalList.Add("");
+
+			generated = string.Join(vbCrLf, finalList);
+
+			if (errCount > 0)
+				logz = LogDate() + "[Error] Count: " + errCount.ToString("#,0", invarCulture) + vbCrLf + logz;
+			logz = LogDate() + "[Domains] Count: " + downloadedUnified.Count().ToString("#,0", invarCulture) + vbCrLf + logz;
+
+			//saveto
+			logz = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + logz;
+
+			int exitcod = 0;
+			if (generated != "")
+			{
+				try
+				{
+					File.WriteAllText(@"C:\Windows\System32\drivers\etc\hosts", generated, System.Text.Encoding.ASCII);
+				}
+				catch (Exception ex)
+				{
+					logz = LogDate() + "[Error] " + ex.Source + ": " + ex.Message + vbCrLf + logz;
+					exitcod = 5;
+				}
+			}
+			else
+			{
+				logz = LogDate() + "[End] Nothing generated!" + vbCrLf + logz;
+				exitcod = 1;
+			}
+
+			//write to logs
+			File.WriteAllText("log.txt", logz, Encoding.ASCII);
+
+			//success exit
+			Environment.Exit(exitcod);
+		}
+		#endregion "Auto"
 
 		#region "Form"
 
@@ -84,7 +467,7 @@ namespace HostsZ.Forms
 
 			if (Tabber.SelectedIndex == 1)
 			{
-				if (!Regex.Match(TxTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", System.Text.RegularExpressions.RegexOptions.CultureInvariant).Success)
+				if (!Regex.Match(TxTargetIP.Text.Trim(), @"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", RegexOptions.CultureInvariant).Success)
 				{
 					TxTargetIP.Text = "0.0.0.0";
 				}
@@ -449,9 +832,20 @@ namespace HostsZ.Forms
 
 			if (generated != "")
 			{
-				string saveP = savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", invarCulture);
-				File.WriteAllText(saveP, generated, System.Text.Encoding.ASCII);
-				System.Diagnostics.Process.Start("explorer", "/select, " + saveP);
+				try
+				{
+					string saveP = savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", invarCulture);
+					File.WriteAllText(saveP, generated, System.Text.Encoding.ASCII);
+					System.Diagnostics.Process.Start("explorer", "/select, " + saveP);
+				}
+				catch (Exception ex)
+				{
+					TxLogs.Text = LogDate() + "[Error] " + ex.Source + ": " + ex.Message + vbCrLf + TxLogs.Text;
+				}
+			}
+			else
+			{
+				TxLogs.Text = LogDate() + "[End] Nothing generated!" + vbCrLf + TxLogs.Text;
 			}
 		}
 

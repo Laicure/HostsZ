@@ -30,6 +30,7 @@
 		{
 			this.Tabber = new System.Windows.Forms.TabControl();
 			this.TabSettings = new System.Windows.Forms.TabPage();
+			this.LbClearCache = new System.Windows.Forms.Label();
 			this.LbSources = new System.Windows.Forms.Label();
 			this.LbBlacklist = new System.Windows.Forms.Label();
 			this.TxBlacklist = new System.Windows.Forms.TextBox();
@@ -45,10 +46,8 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NumDomainPerLine = new System.Windows.Forms.NumericUpDown();
 			this.TabGenerate = new System.Windows.Forms.TabPage();
-			this.LbGenerate = new System.Windows.Forms.Label();
 			this.TxLogs = new System.Windows.Forms.TextBox();
 			this.BgGenerate = new System.ComponentModel.BackgroundWorker();
-			this.LbClearCache = new System.Windows.Forms.Label();
 			this.Tabber.SuspendLayout();
 			this.TabSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumDomainPerLine)).BeginInit();
@@ -92,6 +91,21 @@
 			this.TabSettings.Size = new System.Drawing.Size(524, 431);
 			this.TabSettings.TabIndex = 0;
 			this.TabSettings.Text = "Settings";
+			// 
+			// LbClearCache
+			// 
+			this.LbClearCache.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbClearCache.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.LbClearCache.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbClearCache.ForeColor = System.Drawing.Color.Blue;
+			this.LbClearCache.Location = new System.Drawing.Point(-1, 54);
+			this.LbClearCache.Margin = new System.Windows.Forms.Padding(0);
+			this.LbClearCache.Name = "LbClearCache";
+			this.LbClearCache.Size = new System.Drawing.Size(200, 19);
+			this.LbClearCache.TabIndex = 14;
+			this.LbClearCache.Text = "Clear Cached Sources";
+			this.LbClearCache.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbClearCache.Click += new System.EventHandler(this.LbClearCache_Click);
 			// 
 			// LbSources
 			// 
@@ -313,7 +327,6 @@
 			// 
 			this.TabGenerate.BackColor = System.Drawing.Color.White;
 			this.TabGenerate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TabGenerate.Controls.Add(this.LbGenerate);
 			this.TabGenerate.Controls.Add(this.TxLogs);
 			this.TabGenerate.Location = new System.Drawing.Point(4, 24);
 			this.TabGenerate.Name = "TabGenerate";
@@ -321,34 +334,19 @@
 			this.TabGenerate.TabIndex = 1;
 			this.TabGenerate.Text = "Generate";
 			// 
-			// LbGenerate
-			// 
-			this.LbGenerate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.LbGenerate.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.LbGenerate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.LbGenerate.ForeColor = System.Drawing.Color.Blue;
-			this.LbGenerate.Location = new System.Drawing.Point(-1, -1);
-			this.LbGenerate.Margin = new System.Windows.Forms.Padding(0);
-			this.LbGenerate.Name = "LbGenerate";
-			this.LbGenerate.Size = new System.Drawing.Size(524, 19);
-			this.LbGenerate.TabIndex = 11;
-			this.LbGenerate.Text = "Generate";
-			this.LbGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.LbGenerate.Click += new System.EventHandler(this.LbGenerate_Click);
-			// 
 			// TxLogs
 			// 
 			this.TxLogs.BackColor = System.Drawing.Color.White;
 			this.TxLogs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.TxLogs.ForeColor = System.Drawing.Color.Black;
-			this.TxLogs.Location = new System.Drawing.Point(-1, 17);
+			this.TxLogs.Location = new System.Drawing.Point(-1, -1);
 			this.TxLogs.Margin = new System.Windows.Forms.Padding(0);
 			this.TxLogs.MaxLength = 0;
 			this.TxLogs.Multiline = true;
 			this.TxLogs.Name = "TxLogs";
 			this.TxLogs.ReadOnly = true;
 			this.TxLogs.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.TxLogs.Size = new System.Drawing.Size(524, 413);
+			this.TxLogs.Size = new System.Drawing.Size(524, 431);
 			this.TxLogs.TabIndex = 10;
 			this.TxLogs.TabStop = false;
 			this.TxLogs.WordWrap = false;
@@ -357,21 +355,6 @@
 			// 
 			this.BgGenerate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BgGenerate_DoWork);
 			this.BgGenerate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgGenerate_RunWorkerCompleted);
-			// 
-			// LbClearCache
-			// 
-			this.LbClearCache.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.LbClearCache.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.LbClearCache.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.LbClearCache.ForeColor = System.Drawing.Color.Blue;
-			this.LbClearCache.Location = new System.Drawing.Point(-1, 54);
-			this.LbClearCache.Margin = new System.Windows.Forms.Padding(0);
-			this.LbClearCache.Name = "LbClearCache";
-			this.LbClearCache.Size = new System.Drawing.Size(200, 19);
-			this.LbClearCache.TabIndex = 14;
-			this.LbClearCache.Text = "Clear Cached Sources";
-			this.LbClearCache.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.LbClearCache.Click += new System.EventHandler(this.LbClearCache_Click);
 			// 
 			// MainZ
 			// 
@@ -424,7 +407,6 @@
 		private System.Windows.Forms.NumericUpDown NumDomainPerLine;
 		private System.ComponentModel.BackgroundWorker BgGenerate;
 		private System.Windows.Forms.TextBox TxLogs;
-		private System.Windows.Forms.Label LbGenerate;
 		private System.Windows.Forms.Label LbClearCache;
 	}
 }

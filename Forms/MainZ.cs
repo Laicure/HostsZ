@@ -391,7 +391,7 @@ namespace HostsZ.Forms
 
 			if (errCount > 0)
 				logz = LogDate() + "[Error] Count: " + errCount.ToString("#,0", invarCulture) + vbCrLf + logz;
-			logz = LogDate() + "[Domains] Count: " + downloadedUnified.Count().ToString("#,0", invarCulture) + vbCrLf + logz;
+			logz = LogDate() + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", invarCulture) + vbCrLf + logz;
 
 			//saveto
 			logz = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + logz;
@@ -506,27 +506,28 @@ namespace HostsZ.Forms
 					Tabber.SelectedIndex = 0;
 					TxSources.Focus();
 				}
-			}
-		}
-
-		private void LbGenerate_Click(object sender, EventArgs e)
-		{
-			if (!BgGenerate.IsBusy)
-			{
-				using (FolderBrowserDialog SaveToBrowse = new FolderBrowserDialog())
+				else
 				{
+					if (!BgGenerate.IsBusy)
 					{
-						SaveToBrowse.Description = "Select a folder to save the generated hosts file";
-						SaveToBrowse.RootFolder = Environment.SpecialFolder.Desktop;
-						SaveToBrowse.ShowNewFolderButton = true;
-						if (SaveToBrowse.ShowDialog() == DialogResult.OK)
+						using (FolderBrowserDialog SaveToBrowse = new FolderBrowserDialog())
 						{
-							savePath = SaveToBrowse.SelectedPath;
-
-							LbGenerate.Text = "Generating...";
-							TxLogs.Text = LogDate() + "[Start]";
-							generated = "";
-							BgGenerate.RunWorkerAsync();
+							{
+								SaveToBrowse.Description = "Select a folder to save the generated hosts file";
+								SaveToBrowse.RootFolder = Environment.SpecialFolder.Desktop;
+								SaveToBrowse.ShowNewFolderButton = true;
+								if (SaveToBrowse.ShowDialog() == DialogResult.OK)
+								{
+									savePath = SaveToBrowse.SelectedPath;
+									TxLogs.Text = LogDate() + "[Start]";
+									generated = "";
+									BgGenerate.RunWorkerAsync();
+								}
+								else
+								{
+									Tabber.SelectedIndex = 0;
+								}
+							}
 						}
 					}
 				}
@@ -831,12 +832,11 @@ namespace HostsZ.Forms
 
 			if (errCount > 0)
 				TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Error] Count: " + errCount.ToString("#,0", invarCulture) + vbCrLf + TxLogs.Text));
-			TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Domains] Count: " + downloadedUnified.Count().ToString("#,0", invarCulture) + vbCrLf + TxLogs.Text));
+			TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", invarCulture) + vbCrLf + TxLogs.Text));
 		}
 
 		private void BgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			LbGenerate.Text = "Generate";
 			TxLogs.Text = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + TxLogs.Text;
 
 			//set parsed Counts

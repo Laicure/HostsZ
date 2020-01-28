@@ -28,6 +28,7 @@ namespace HostsZ.Forms
 		private int errCount = 0;
 		internal List<SourceCache> sourceCacheList = new List<SourceCache>();
 		private string generated = "";
+		private bool genCancel = false;
 
 		//misc
 		private string logz = "";
@@ -503,8 +504,6 @@ namespace HostsZ.Forms
 				if (setSources.Count() == 0)
 				{
 					MessageBox.Show("No valid sources parsed!", "Nope, sorry. Nothing.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					Tabber.SelectedIndex = 0;
-					TxSources.Focus();
 				}
 				else
 				{
@@ -521,16 +520,23 @@ namespace HostsZ.Forms
 									savePath = SaveToBrowse.SelectedPath;
 									TxLogs.Text = LogDate() + "[Start]";
 									generated = "";
+									LbCancel.Visible = true;
+									genCancel = false;
 									BgGenerate.RunWorkerAsync();
-								}
-								else
-								{
-									Tabber.SelectedIndex = 0;
 								}
 							}
 						}
 					}
 				}
+			}
+		}
+
+		private void LbCancel_Click(object sender, EventArgs e)
+		{
+			if (BgGenerate.IsBusy)
+			{
+				genCancel = true;
+				LbCancel.Visible = false;
 			}
 		}
 
@@ -547,6 +553,10 @@ namespace HostsZ.Forms
 			//download sources
 			for (int i = 0; i <= setSources.Count() - 1; i++)
 			{
+				//cancel?
+				if (genCancel)
+					return;
+
 				string sourceUrl = setSources[i];
 
 				//use cache?
@@ -583,6 +593,10 @@ namespace HostsZ.Forms
 						downloadedHash.TrimExcess();
 						for (int y = 0; y <= tempDomains.Count() - 1; y++)
 						{
+							//cancel?
+							if (genCancel)
+								return;
+
 							Uri urxed = null;
 							string domStr = tempDomains[y];
 							bool inval = false;
@@ -638,6 +652,10 @@ namespace HostsZ.Forms
 					string[] whitelistSources = setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
 					for (int i = 0; i <= whitelistSources.Count() - 1; i++)
 					{
+						//cancel?
+						if (genCancel)
+							return;
+
 						string whitelistUrl = whitelistSources[i];
 						string downloadedData = "";
 						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] Whitelist - " + whitelistUrl + vbCrLf + TxLogs.Text));
@@ -664,6 +682,10 @@ namespace HostsZ.Forms
 							downloadedHash.TrimExcess();
 							for (int y = 0; y <= tempDomains.Count() - 1; y++)
 							{
+								//cancel?
+								if (genCancel)
+									return;
+
 								Uri urxed = null;
 								string domStr = tempDomains[y];
 								bool inval = false;
@@ -710,6 +732,10 @@ namespace HostsZ.Forms
 					string[] blacklistSources = setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
 					for (int i = 0; i <= blacklistSources.Count() - 1; i++)
 					{
+						//cancel?
+						if (genCancel)
+							return;
+
 						string blacklistUrl = blacklistSources[i];
 						string downloadedData = "";
 						TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate() + "[Fetch] Blacklist - " + blacklistUrl + vbCrLf + TxLogs.Text));
@@ -736,6 +762,10 @@ namespace HostsZ.Forms
 							downloadedHash.TrimExcess();
 							for (int y = 0; y <= tempDomains.Count() - 1; y++)
 							{
+								//cancel?
+								if (genCancel)
+									return;
+
 								Uri urxed = null;
 								string domStr = tempDomains[y];
 								bool inval = false;
@@ -788,6 +818,10 @@ namespace HostsZ.Forms
 				string artemp = "";
 				for (int i = 0; i <= unifiedTempCountIndex; i++)
 				{
+					//cancel?
+					if (genCancel)
+						return;
+
 					artemp = artemp + " " + unifiedTemp[i];
 					if ((i + 1) % setDPL == 0)
 					{
@@ -837,7 +871,16 @@ namespace HostsZ.Forms
 
 		private void BgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			TxLogs.Text = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + TxLogs.Text;
+			LbCancel.Visible = false;
+			if (genCancel)
+			{
+				TxLogs.Text = LogDate() + "[Canceled] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + TxLogs.Text;
+				genCancel = false;
+			}
+			else
+			{
+				TxLogs.Text = LogDate() + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + vbCrLf + TxLogs.Text;
+			}
 
 			//set parsed Counts
 			LbSources.Text = "[" + setSources.Count().ToString("#,0", invarCulture) + "] Sources";

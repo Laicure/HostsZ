@@ -48,6 +48,7 @@
 			this.TabGenerate = new System.Windows.Forms.TabPage();
 			this.TxLogs = new System.Windows.Forms.TextBox();
 			this.BgGenerate = new System.ComponentModel.BackgroundWorker();
+			this.LbCancel = new System.Windows.Forms.Label();
 			this.Tabber.SuspendLayout();
 			this.TabSettings.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.NumDomainPerLine)).BeginInit();
@@ -207,8 +208,8 @@
 			this.TxLoopbacks.TabIndex = 7;
 			this.TxLoopbacks.TabStop = false;
 			this.TxLoopbacks.Text = "0.0.0.0\r\nbroadcasthost\r\nip6-allhosts\r\nip6-allnodes\r\nip6-allrouters\r\nip6-localhost" +
-    "\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
-    "domain\r\n";
+	"\r\nip6-localnet\r\nip6-loopback\r\nip6-mcastprefix\r\nlocal\r\nlocalhost\r\nlocalhost.local" +
+	"domain\r\n";
 			this.TxLoopbacks.WordWrap = false;
 			// 
 			// label4
@@ -273,8 +274,8 @@
 			this.ChlOptions.ForeColor = System.Drawing.Color.Black;
 			this.ChlOptions.FormattingEnabled = true;
 			this.ChlOptions.Items.AddRange(new object[] {
-            "Use tab instead of space",
-            "Show parse errors"});
+			"Use tab instead of space",
+			"Show parse errors"});
 			this.ChlOptions.Location = new System.Drawing.Point(-1, 17);
 			this.ChlOptions.Margin = new System.Windows.Forms.Padding(0);
 			this.ChlOptions.Name = "ChlOptions";
@@ -303,25 +304,25 @@
 			this.NumDomainPerLine.Location = new System.Drawing.Point(-1, 130);
 			this.NumDomainPerLine.Margin = new System.Windows.Forms.Padding(0);
 			this.NumDomainPerLine.Maximum = new decimal(new int[] {
-            9,
-            0,
-            0,
-            0});
+			9,
+			0,
+			0,
+			0});
 			this.NumDomainPerLine.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			this.NumDomainPerLine.Name = "NumDomainPerLine";
 			this.NumDomainPerLine.Size = new System.Drawing.Size(200, 23);
 			this.NumDomainPerLine.TabIndex = 5;
 			this.NumDomainPerLine.TabStop = false;
 			this.NumDomainPerLine.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.NumDomainPerLine.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+			1,
+			0,
+			0,
+			0});
 			// 
 			// TabGenerate
 			// 
@@ -356,12 +357,29 @@
 			this.BgGenerate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BgGenerate_DoWork);
 			this.BgGenerate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BgGenerate_RunWorkerCompleted);
 			// 
+			// LbCancel
+			// 
+			this.LbCancel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.LbCancel.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.LbCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LbCancel.ForeColor = System.Drawing.Color.Blue;
+			this.LbCancel.Location = new System.Drawing.Point(473, 1);
+			this.LbCancel.Margin = new System.Windows.Forms.Padding(0);
+			this.LbCancel.Name = "LbCancel";
+			this.LbCancel.Size = new System.Drawing.Size(60, 19);
+			this.LbCancel.TabIndex = 15;
+			this.LbCancel.Text = "Cancel";
+			this.LbCancel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.LbCancel.Visible = false;
+			this.LbCancel.Click += new System.EventHandler(this.LbCancel_Click);
+			// 
 			// MainZ
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(534, 461);
+			this.Controls.Add(this.LbCancel);
 			this.Controls.Add(this.Tabber);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -408,5 +426,6 @@
 		private System.ComponentModel.BackgroundWorker BgGenerate;
 		private System.Windows.Forms.TextBox TxLogs;
 		private System.Windows.Forms.Label LbClearCache;
+		private System.Windows.Forms.Label LbCancel;
 	}
 }

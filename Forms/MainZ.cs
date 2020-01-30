@@ -431,6 +431,7 @@ namespace HostsZ.Forms
 		private void MainZ_Load(object sender, EventArgs e)
 		{
 			this.Icon = HostsZ.Properties.Resources.art;
+			this.Text = "HostsZ v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 			//init
 			ChlOptions.SetItemChecked(1, true);

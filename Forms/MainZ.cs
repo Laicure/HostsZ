@@ -845,9 +845,9 @@ namespace HostsZ.Forms
 				"# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
 				"# Generated using github.com/Laicure/HostsZ",
 				"",
-				"# Sources: " + sourceCacheList.Select(x => x.URL).Count().ToString("#,0", invarCulture)
+				"# Sources: " + sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => x.URL).Count().ToString("#,0", invarCulture)
 			};
-			finalList.AddRange(sourceCacheList.Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
+			finalList.AddRange(sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
 			finalList.Add("");
 			finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
 			finalList.Add("");

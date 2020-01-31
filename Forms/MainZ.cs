@@ -108,71 +108,57 @@ namespace HostsZ.Forms
 			for (int i = 0; i <= setSources.Count() - 1; i++)
 			{
 				string sourceUrl = setSources[i];
-
-				//use cache?
-				if (sourceCacheList.Any(x => x.URL == sourceUrl))
+				string downloadedData = "";
+				//download
+				logz = LogDate(false) + "[Fetch] " + sourceUrl + vbCrLf + logz;
+				try
 				{
-					HashSet<string> sourceDomains = new HashSet<string>(sourceCacheList.Where(x => x.URL == sourceUrl).Select(x => x.Domains).FirstOrDefault());
-					downloadedUnified.UnionWith(sourceDomains);
-					logz = LogDate(false) + "[Cached] (" + sourceDomains.Count.ToString("#,0", invarCulture) + ") " + sourceUrl + vbCrLf + logz;
+					using (var clie = new WebClient())
+					{
+						clie.UseDefaultCredentials = true;
+						downloadedData = clie.DownloadString(sourceUrl);
+					}
 				}
-				else
+				catch (Exception ex)
 				{
-					string downloadedData = "";
-					//download
-					logz = LogDate(false) + "[Fetch] " + sourceUrl + vbCrLf + logz;
-					try
+					logz = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + logz;
+					errCount += 1;
+				}
+				if (downloadedData != "")
+				{
+					//parse
+					HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
+					string[] tempDomains = downloadedHash.ToArray();
+					downloadedHash.Clear();
+					downloadedHash.TrimExcess();
+					for (int y = 0; y <= tempDomains.Count() - 1; y++)
 					{
-						using (var clie = new WebClient())
+						Uri urxed = null;
+						string domStr = tempDomains[y];
+						bool inval = false;
+						try
 						{
-							clie.UseDefaultCredentials = true;
-							downloadedData = clie.DownloadString(sourceUrl);
+							urxed = new Uri("http://" + domStr);
+						}
+						catch (Exception)
+						{
+							if (setOptions[1])
+								logz = "> [Invalid] " + domStr + vbCrLf + logz;
+							inval = true;
+							errCount += 1;
+						}
+						if (!inval)
+						{
+							string safeHost = urxed.DnsSafeHost;
+							if (!IsLoopback(safeHost))
+								downloadedHash.Add(safeHost);
 						}
 					}
-					catch (Exception ex)
-					{
-						logz = "> [" + ex.Source + "] " + ex.Message.Replace(vbCrLf, " ") + vbCrLf + logz;
-						errCount += 1;
-					}
-					if (downloadedData != "")
-					{
-						//parse
-						HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { vbCrLf, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", "").Trim()).Select(x => Regex.Replace(x, @"^.+ ", "").Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
-						string[] tempDomains = downloadedHash.ToArray();
-						downloadedHash.Clear();
-						downloadedHash.TrimExcess();
-						for (int y = 0; y <= tempDomains.Count() - 1; y++)
-						{
-							Uri urxed = null;
-							string domStr = tempDomains[y];
-							bool inval = false;
-							try
-							{
-								urxed = new Uri("http://" + domStr);
-							}
-							catch (Exception)
-							{
-								if (setOptions[1])
-									logz = "> [Invalid] " + domStr + vbCrLf + logz;
-								inval = true;
-								errCount += 1;
-							}
-							if (!inval)
-							{
-								string safeHost = urxed.DnsSafeHost;
-								if (!IsLoopback(safeHost))
-									downloadedHash.Add(safeHost);
-							}
-						}
-						Array.Clear(tempDomains, 0, 0);
-						//add/re-add to cache
-						if (sourceCacheList.Any(x => x.URL == sourceUrl))
-							sourceCacheList.RemoveAll(x => x.URL == sourceUrl);
-						sourceCacheList.Add(new SourceCache { URL = sourceUrl, Domains = downloadedHash });
-						//unify
-						downloadedUnified.UnionWith(downloadedHash);
-						logz = LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + logz;
-					}
+					Array.Clear(tempDomains, 0, 0);
+
+					//unify
+					downloadedUnified.UnionWith(downloadedHash);
+					logz = LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + vbCrLf + logz;
 				}
 			}
 
@@ -371,9 +357,9 @@ namespace HostsZ.Forms
 				"# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
 				"# Generated using github.com/Laicure/HostsZ",
 				"",
-				"# Sources: " + sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => x.URL).Count().ToString("#,0", invarCulture)
+				"# Sources: " + setSources.Count().ToString("#,0", invarCulture)
 			};
-			finalList.AddRange(sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
+			finalList.AddRange(setSources.Select(x => "# " + x));
 			finalList.Add("");
 			finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
 			finalList.Add("");

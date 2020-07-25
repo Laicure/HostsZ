@@ -1,19 +1,19 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace HostsZ
+﻿namespace HostsZ
 {
-	internal static class Program
-	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		private static void Main()
-		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Forms.MainZ());
-		}
-	}
+    using System;
+    using System.Windows.Forms;
+
+    internal static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Forms.MainZ());
+        }
+    }
 }

@@ -63,6 +63,7 @@
     <Compile Include="Forms\MainZ.Designer.cs">
       <DependentUpon>MainZ.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modules\SourceCached.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\MainZ.resx">
@@ -91,9 +92,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\art.ico" />
   </ItemGroup>

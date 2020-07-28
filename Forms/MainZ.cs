@@ -393,13 +393,13 @@
             ////finalize
             this.logz = this.LogDate(false) + "[Merge] Finalize list" + this.newLined + this.logz;
             List<string> finalList = new List<string>
-   {
-    "# Entries: " + downloadedUnified.Count().ToString("#,0", this.invarCulture),
-    "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", this.invarCulture) + " UTC",
-    "# this.generated using github.com/Laicure/HostsZ",
-    string.Empty,
-    "# Sources: " + this.setSources.Count().ToString("#,0", this.invarCulture)
-   };
+               {
+                "# Entries: " + downloadedUnified.Count().ToString("#,0", this.invarCulture),
+                "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", this.invarCulture) + " UTC",
+                "# Generated using github.com/Laicure/HostsZ",
+                string.Empty,
+                "# Sources: " + this.setSources.Count().ToString("#,0", this.invarCulture)
+               };
             finalList.AddRange(this.setSources.Select(x => "# " + x));
             finalList.Add(string.Empty);
             finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });

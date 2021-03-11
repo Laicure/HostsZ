@@ -41,7 +41,7 @@
 
         public MainZ()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         #region "Auto"
@@ -49,13 +49,13 @@
         protected override void SetVisibleCore(bool value)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-            if (!this.IsHandleCreated)
+            if (!IsHandleCreated)
             {
-                this.CreateHandle();
+                CreateHandle();
                 if (Environment.GetCommandLineArgs().LongLength > 1 && Environment.CommandLine.Contains("-auto"))
                 {
                     value = false;
-                    this.Autoo();
+                    Autoo();
                 }
                 else
                 {
@@ -74,59 +74,59 @@
             bool dpl = Regex.Match(argg, @"(\-dpl)([2-9])").Success;
 
             ////file checks
-            if (!File.Exists(this.startUpPath + "source.txt"))
+            if (!File.Exists(startUpPath + "source.txt"))
             {
-                File.WriteAllText(this.startUpPath + "source.txt", string.Empty, Encoding.ASCII);
+                File.WriteAllText(startUpPath + "source.txt", string.Empty, Encoding.ASCII);
             }
 
-            if (!File.Exists(this.startUpPath + "white.txt"))
+            if (!File.Exists(startUpPath + "white.txt"))
             {
-                File.WriteAllText(this.startUpPath + "white.txt", string.Empty, Encoding.ASCII);
+                File.WriteAllText(startUpPath + "white.txt", string.Empty, Encoding.ASCII);
             }
 
-            if (!File.Exists(this.startUpPath + "black.txt"))
+            if (!File.Exists(startUpPath + "black.txt"))
             {
-                File.WriteAllText(this.startUpPath + "black.txt", string.Empty, Encoding.ASCII);
+                File.WriteAllText(startUpPath + "black.txt", string.Empty, Encoding.ASCII);
             }
 
-            if (!File.Exists(this.startUpPath + "loopback.txt"))
+            if (!File.Exists(startUpPath + "loopback.txt"))
             {
-                File.WriteAllLines(this.startUpPath + "loopback.txt", new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" }, Encoding.ASCII);
+                File.WriteAllLines(startUpPath + "loopback.txt", new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" }, Encoding.ASCII);
             }
 
             ////source check
-            this.setSources = File.ReadAllLines(this.startUpPath + "source.txt").Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).ToArray();
+            setSources = File.ReadAllLines(startUpPath + "source.txt").Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
             ////exit for invalid source
-            if (this.setSources.Count() == 0)
+            if (setSources.Count() == 0)
             {
-                File.WriteAllText(this.startUpPath + "log.txt", this.LogDate(false) + "[Init] No valid sources parsed!", Encoding.ASCII);
+                File.WriteAllText(startUpPath + "log.txt", LogDate(false) + "[Init] No valid sources parsed!", Encoding.ASCII);
                 Environment.Exit(3);
                 return;
             }
             ////init
-            this.setOptions = new bool[] { tabb, true };
-            this.setTargIP = "0.0.0.0";
-            this.setDPL = dpl ? Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2")) : 1;
-            this.setLoopbacks = File.ReadAllLines(this.startUpPath + "loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-            this.setWhitelist = File.ReadAllLines(this.startUpPath + "white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !this.IsIPAddress(x) & !this.IsLoopback(x)).ToArray();
-            this.setBlacklist = File.ReadAllLines(this.startUpPath + "black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x) & !this.IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out this.urx)).ToArray();
+            setOptions = new bool[] { tabb, true };
+            setTargIP = "0.0.0.0";
+            setDPL = dpl ? Convert.ToInt32(Regex.Replace(argg, @"^.+?(\-dpl)([2-9]).+?$", "$2")) : 1;
+            setLoopbacks = File.ReadAllLines(startUpPath + "loopback.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            setWhitelist = File.ReadAllLines(startUpPath + "white.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
+            setBlacklist = File.ReadAllLines(startUpPath + "black.txt").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
 
             ////start
-            this.logz = this.LogDate(true) + "[Start]";
-            this.generated = string.Empty;
+            logz = LogDate(true) + "[Start]";
+            generated = string.Empty;
             BgGenerate.RunWorkerAsync();
 
-            this.startExec = DateTime.UtcNow;
-            this.errCount = 0;
+            startExec = DateTime.UtcNow;
+            errCount = 0;
             HashSet<string> downloadedUnified = new HashSet<string>();
 
             ////download sources
-            for (int i = 0; i <= this.setSources.Count() - 1; i++)
+            for (int i = 0; i <= setSources.Count() - 1; i++)
             {
-                string sourceUrl = this.setSources[i];
+                string sourceUrl = setSources[i];
                 string downloadedData = string.Empty;
                 ////download
-                this.logz = this.LogDate(false) + "[Fetch] " + sourceUrl + this.newLined + this.logz;
+                logz = LogDate(false) + "[Fetch] " + sourceUrl + newLined + logz;
                 try
                 {
                     using (var clie = new WebClient())
@@ -137,14 +137,14 @@
                 }
                 catch (Exception ex)
                 {
-                    this.logz = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + this.logz;
-                    this.errCount += 1;
+                    logz = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + logz;
+                    errCount += 1;
                 }
 
                 if (downloadedData != string.Empty)
                 {
                     ////parse
-                    HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                    HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                     string[] tempDomains = downloadedHash.ToArray();
                     downloadedHash.Clear();
                     downloadedHash.TrimExcess();
@@ -159,21 +159,21 @@
                         }
                         catch (Exception)
                         {
-                            if (this.setOptions[1])
+                            if (setOptions[1])
                             {
                                 {
-                                    this.logz = "> [Invalid] " + domStr + this.newLined + this.logz;
+                                    logz = "> [Invalid] " + domStr + newLined + logz;
                                 }
                             }
 
                             inval = true;
-                            this.errCount += 1;
+                            errCount += 1;
                         }
 
                         if (!inval)
                         {
                             string safeHost = urxed.DnsSafeHost;
-                            if (!this.IsLoopback(safeHost))
+                            if (!IsLoopback(safeHost))
                             {
                                 downloadedHash.Add(safeHost);
                             }
@@ -184,35 +184,35 @@
 
                     ////unify
                     downloadedUnified.UnionWith(downloadedHash);
-                    this.logz = this.LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + this.logz;
+                    logz = LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + logz;
                 }
             }
 
             ////remove whitelisted
-            if (this.setWhitelist.Count() > 0)
+            if (setWhitelist.Count() > 0)
             {
-                this.logz = this.LogDate(false) + "[Clean] Whitelist" + this.newLined + this.logz;
+                logz = LogDate(false) + "[Clean] Whitelist" + newLined + logz;
                 ////remove non-wildcard
-                downloadedUnified.ExceptWith(this.setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out this.urx)));
+                downloadedUnified.ExceptWith(setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)));
                 downloadedUnified.TrimExcess();
 
                 ////remove wildcarded
-                if (this.setWhitelist.Where(x => x.Contains("*")).Count() > 0)
+                if (setWhitelist.Where(x => x.Contains("*")).Count() > 0)
                 {
-                    string whiteRegex = string.Join("|", this.setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
+                    string whiteRegex = string.Join("|", setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
                     downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success).ToList());
                     downloadedUnified.TrimExcess();
                 }
 
                 ////parse url whitelist
-                if (this.setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Count() > 0)
+                if (setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
                 {
-                    string[] whitelistSources = this.setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Distinct().ToArray();
+                    string[] whitelistSources = setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
                     for (int i = 0; i <= whitelistSources.Count() - 1; i++)
                     {
                         string whitelistUrl = whitelistSources[i];
                         string downloadedData = string.Empty;
-                        this.logz = this.LogDate(false) + "[Fetch] Whitelist - " + whitelistUrl + this.newLined + this.logz;
+                        logz = LogDate(false) + "[Fetch] Whitelist - " + whitelistUrl + newLined + logz;
                         try
                         {
                             using (var clie = new WebClient())
@@ -223,14 +223,14 @@
                         }
                         catch (Exception ex)
                         {
-                            this.logz = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + this.logz;
-                            this.errCount += 1;
+                            logz = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + logz;
+                            errCount += 1;
                         }
 
                         if (downloadedData != string.Empty)
                         {
                             ////parse
-                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                             string[] tempDomains = downloadedHash.ToArray();
                             downloadedHash.Clear();
                             downloadedHash.TrimExcess();
@@ -245,19 +245,19 @@
                                 }
                                 catch (Exception)
                                 {
-                                    if (this.setOptions[1])
+                                    if (setOptions[1])
                                     {
-                                        this.logz = "> [Invalid] Whitelist - " + domStr + this.newLined + this.logz;
+                                        logz = "> [Invalid] Whitelist - " + domStr + newLined + logz;
                                     }
 
                                     inval = true;
-                                    this.errCount += 1;
+                                    errCount += 1;
                                 }
 
                                 if (!inval)
                                 {
                                     string safeHost = urxed.DnsSafeHost;
-                                    if (!this.IsLoopback(safeHost))
+                                    if (!IsLoopback(safeHost))
                                     {
                                         downloadedHash.Add(safeHost);
                                     }
@@ -266,7 +266,7 @@
 
                             Array.Clear(tempDomains, 0, 0);
                             ////exclude
-                            this.logz = this.LogDate(false) + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + this.logz;
+                            logz = LogDate(false) + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + logz;
                             downloadedUnified.ExceptWith(downloadedHash);
                         }
                     }
@@ -275,23 +275,23 @@
 
             ////remove duplicate blacklist
             HashSet<string> blacks = new HashSet<string>();
-            if (this.setBlacklist.Count() > 0)
+            if (setBlacklist.Count() > 0)
             {
-                this.logz = this.LogDate(false) + "[Clean] Blacklist" + this.newLined + this.logz;
-                blacks = new HashSet<string>(this.setBlacklist);
-                Array.Clear(this.setBlacklist, 0, 0);
+                logz = LogDate(false) + "[Clean] Blacklist" + newLined + logz;
+                blacks = new HashSet<string>(setBlacklist);
+                Array.Clear(setBlacklist, 0, 0);
                 blacks.ExceptWith(downloadedUnified);
-                this.setBlacklist = blacks.ToArray();
+                setBlacklist = blacks.ToArray();
 
                 ////parse url blacklist
-                if (this.setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Count() > 0)
+                if (setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
                 {
-                    string[] blacklistSources = this.setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Distinct().ToArray();
+                    string[] blacklistSources = setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
                     for (int i = 0; i <= blacklistSources.Count() - 1; i++)
                     {
                         string blacklistUrl = blacklistSources[i];
                         string downloadedData = string.Empty;
-                        this.logz = this.LogDate(false) + "[Fetch] Blacklist - " + blacklistUrl + this.newLined + this.logz;
+                        logz = LogDate(false) + "[Fetch] Blacklist - " + blacklistUrl + newLined + logz;
                         try
                         {
                             using (var clie = new WebClient())
@@ -302,14 +302,14 @@
                         }
                         catch (Exception ex)
                         {
-                            this.logz = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + this.logz;
-                            this.errCount += 1;
+                            logz = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + logz;
+                            errCount += 1;
                         }
 
                         if (downloadedData != string.Empty)
                         {
                             ////parse
-                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                             string[] tempDomains = downloadedHash.ToArray();
                             downloadedHash.Clear();
                             downloadedHash.TrimExcess();
@@ -324,19 +324,19 @@
                                 }
                                 catch (Exception)
                                 {
-                                    if (this.setOptions[1])
+                                    if (setOptions[1])
                                     {
-                                        this.logz = "> [Invalid] Blacklist - " + domStr + this.newLined + this.logz;
+                                        logz = "> [Invalid] Blacklist - " + domStr + newLined + logz;
                                     }
 
                                     inval = true;
-                                    this.errCount += 1;
+                                    errCount += 1;
                                 }
 
                                 if (!inval)
                                 {
                                     string safeHost = urxed.DnsSafeHost;
-                                    if (!this.IsLoopback(safeHost))
+                                    if (!IsLoopback(safeHost))
                                     {
                                         downloadedHash.Add(safeHost);
                                     }
@@ -345,7 +345,7 @@
 
                             Array.Clear(tempDomains, 0, 0);
                             ////exclude
-                            this.logz = this.LogDate(false) + "[Parsed] Blacklist - " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + this.logz;
+                            logz = LogDate(false) + "[Parsed] Blacklist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + logz;
                             blacks.UnionWith(downloadedHash);
                         }
                     }
@@ -354,16 +354,16 @@
 
             if (downloadedUnified.Count() == 0 & blacks.Count() == 0)
             {
-                this.logz = this.LogDate(false) + "[Canceled] Nothing to generate!" + this.newLined + this.logz;
+                logz = LogDate(false) + "[Canceled] Nothing to generate!" + newLined + logz;
                 return;
             }
 
             ////add targetIP
-            string tabSpace = (this.setOptions[0] ? "\t" : " ").ToString();
-            this.logz = this.LogDate(false) + "[Merge] Target IP and " + (this.setOptions[0] ? "Tab" : "Whitespace").ToString() + this.newLined + this.logz;
-            if (this.setDPL == 1)
+            string tabSpace = (setOptions[0] ? "\t" : " ").ToString();
+            logz = LogDate(false) + "[Merge] Target IP and " + (setOptions[0] ? "Tab" : "Whitespace").ToString() + newLined + logz;
+            if (setDPL == 1)
             {
-                downloadedUnified = new HashSet<string>(downloadedUnified.Select(x => this.setTargIP + tabSpace + x));
+                downloadedUnified = new HashSet<string>(downloadedUnified.Select(x => setTargIP + tabSpace + x));
             }
             else
             {
@@ -375,14 +375,14 @@
                 for (int i = 0; i <= unifiedTempCountIndex; i++)
                 {
                     artemp = artemp + " " + unifiedTemp[i];
-                    if ((i + 1) % this.setDPL == 0)
+                    if ((i + 1) % setDPL == 0)
                     {
-                        downloadedUnified.Add(this.setTargIP + tabSpace + artemp);
+                        downloadedUnified.Add(setTargIP + tabSpace + artemp);
                         artemp = string.Empty;
                     }
                     else if (i == unifiedTempCountIndex)
                     {
-                        downloadedUnified.Add(this.setTargIP + tabSpace + artemp);
+                        downloadedUnified.Add(setTargIP + tabSpace + artemp);
                         artemp = string.Empty;
                     }
                 }
@@ -391,23 +391,23 @@
             }
 
             ////finalize
-            this.logz = this.LogDate(false) + "[Merge] Finalize list" + this.newLined + this.logz;
+            logz = LogDate(false) + "[Merge] Finalize list" + newLined + logz;
             List<string> finalList = new List<string>
                {
-                "# Entries: " + downloadedUnified.Count().ToString("#,0", this.invarCulture),
-                "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", this.invarCulture) + " UTC",
+                "# Entries: " + downloadedUnified.Count().ToString("#,0", invarCulture),
+                "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
                 "# Generated using github.com/Laicure/HostsZ",
                 string.Empty,
-                "# Sources: " + this.setSources.Count().ToString("#,0", this.invarCulture)
+                "# Sources: " + setSources.Count().ToString("#,0", invarCulture)
                };
-            finalList.AddRange(this.setSources.Select(x => "# " + x));
+            finalList.AddRange(setSources.Select(x => "# " + x));
             finalList.Add(string.Empty);
             finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
             finalList.Add(string.Empty);
             if (blacks.Count() > 0)
             {
                 finalList.Add("# Blacklist");
-                finalList.AddRange(blacks.Select(x => this.setTargIP + tabSpace + x));
+                finalList.AddRange(blacks.Select(x => setTargIP + tabSpace + x));
                 finalList.Add(string.Empty);
             }
 
@@ -416,40 +416,40 @@
             finalList.Add("# End");
             finalList.Add(string.Empty);
 
-            this.generated = string.Join(this.newLined, finalList);
+            generated = string.Join(newLined, finalList);
 
-            if (this.errCount > 0)
+            if (errCount > 0)
             {
-                this.logz = this.LogDate(false) + "[Error] Count: " + this.errCount.ToString("#,0", this.invarCulture) + this.newLined + this.logz;
+                logz = LogDate(false) + "[Error] Count: " + errCount.ToString("#,0", invarCulture) + newLined + logz;
             }
 
-            this.logz = this.LogDate(false) + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", this.invarCulture) + this.newLined + this.logz;
+            logz = LogDate(false) + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", invarCulture) + newLined + logz;
 
             ////saveto
-            this.logz = this.LogDate(false) + "[End] Took: " + DateTime.UtcNow.Subtract(this.startExec).ToString().Substring(0, 11) + this.newLined + this.logz;
+            logz = LogDate(false) + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + newLined + logz;
 
             int exitcod = 0;
-            if (this.generated != string.Empty)
+            if (generated != string.Empty)
             {
                 try
                 {
-                    File.WriteAllText(@"C:\Windows\System32\drivers\etc\hosts", this.generated, System.Text.Encoding.ASCII);
-                    this.logz = this.LogDate(false) + @"[End] Extracted to C:\Windows\System32\drivers\etc\hosts" + this.newLined + this.logz;
+                    File.WriteAllText(@"C:\Windows\System32\drivers\etc\hosts", generated, System.Text.Encoding.ASCII);
+                    logz = LogDate(false) + @"[End] Extracted to C:\Windows\System32\drivers\etc\hosts" + newLined + logz;
                 }
                 catch (Exception ex)
                 {
-                    this.logz = this.LogDate(false) + "[Error] " + ex.Source + ": " + ex.Message + this.newLined + this.logz;
+                    logz = LogDate(false) + "[Error] " + ex.Source + ": " + ex.Message + newLined + logz;
                     exitcod = 5;
                 }
             }
             else
             {
-                this.logz = this.LogDate(false) + "[End] Nothing this.generated!" + this.newLined + this.logz;
+                logz = LogDate(false) + "[End] Nothing generated!" + newLined + logz;
                 exitcod = 1;
             }
 
             ////write to logs
-            File.WriteAllText(this.startUpPath + "log.txt", this.logz, Encoding.ASCII);
+            File.WriteAllText(startUpPath + "log.txt", logz, Encoding.ASCII);
 
             ////success exit
             Environment.Exit(exitcod);
@@ -461,31 +461,31 @@
 
         private void MainZ_Load(object sender, EventArgs e)
         {
-            this.Icon = HostsZ.Properties.Resources.art;
-            this.Text = "HostsZ v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Icon = HostsZ.Properties.Resources.art;
+            Text = "HostsZ v" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             ////init
             ChlOptions.SetItemChecked(1, true);
 
             ////Load data if present
-            if (File.Exists(this.startUpPath + "source.txt"))
+            if (File.Exists(startUpPath + "source.txt"))
             {
-                TxSources.Text = File.ReadAllText(this.startUpPath + "source.txt");
+                TxSources.Text = File.ReadAllText(startUpPath + "source.txt");
             }
 
-            if (File.Exists(this.startUpPath + "white.txt"))
+            if (File.Exists(startUpPath + "white.txt"))
             {
-                TxWhitelist.Text = File.ReadAllText(this.startUpPath + "white.txt");
+                TxWhitelist.Text = File.ReadAllText(startUpPath + "white.txt");
             }
 
-            if (File.Exists(this.startUpPath + "black.txt"))
+            if (File.Exists(startUpPath + "black.txt"))
             {
-                TxBlacklist.Text = File.ReadAllText(this.startUpPath + "black.txt");
+                TxBlacklist.Text = File.ReadAllText(startUpPath + "black.txt");
             }
 
-            if (File.Exists(this.startUpPath + "loopback.txt"))
+            if (File.Exists(startUpPath + "loopback.txt"))
             {
-                TxLoopbacks.Text = File.ReadAllText(this.startUpPath + "loopback.txt");
+                TxLoopbacks.Text = File.ReadAllText(startUpPath + "loopback.txt");
             }
         }
 
@@ -506,12 +506,12 @@
 
         private void LbClearCache_Click(object sender, EventArgs e)
         {
-            if (this.sourceCacheList.Count() > 1)
+            if (sourceCacheList.Count() > 1)
             {
                 if (MessageBox.Show("Are you sure to clear cached sources?", "Are you?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    this.sourceCacheList.Clear();
-                    this.sourceCacheList.TrimExcess();
+                    sourceCacheList.Clear();
+                    sourceCacheList.TrimExcess();
                 }
             }
         }
@@ -521,7 +521,7 @@
             if (BgGenerate.IsBusy && Tabber.SelectedIndex == 0)
             {
                 Tabber.SelectedIndex = 1;
-                ////MessageBox.Show("HostsZ is currently busy generating your request." + this.newLined + "You may cancel the process instead.", "Busy!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                ////MessageBox.Show("HostsZ is currently busy generating your request." + newLined + "You may cancel the process instead.", "Busy!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -534,21 +534,21 @@
 
                 if (string.IsNullOrWhiteSpace(TxLoopbacks.Text))
                 {
-                    TxLoopbacks.Text = string.Join(this.newLined, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
+                    TxLoopbacks.Text = string.Join(newLined, new string[] { "0.0.0.0", "broadcasthost", "ip6-allhosts", "ip6-allnodes", "ip6-allrouters", "ip6-localhost", "ip6-localnet", "ip6-loopback", "ip6-mcastprefix", "local", "localhost", "localhost.localdomain" });
                 }
 
-                TxSources.Lines = TxSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).ToArray();
+                TxSources.Lines = TxSources.Lines.Select(x => x.Trim()).Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).ToArray();
 
                 ////init
-                this.setOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1) };
-                this.setTargIP = TxTargetIP.Text.Trim();
-                this.setDPL = Convert.ToInt32(NumDomainPerLine.Value);
-                this.setLoopbacks = TxLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-                this.setSources = TxSources.Lines;
-                this.setWhitelist = TxWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !this.IsIPAddress(x) & !this.IsLoopback(x)).ToArray();
-                this.setBlacklist = TxBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x) & !this.IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out this.urx)).ToArray();
+                setOptions = new bool[] { ChlOptions.GetItemChecked(0), ChlOptions.GetItemChecked(1) };
+                setTargIP = TxTargetIP.Text.Trim();
+                setDPL = Convert.ToInt32(NumDomainPerLine.Value);
+                setLoopbacks = TxLoopbacks.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                setSources = TxSources.Lines;
+                setWhitelist = TxWhitelist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x) & !x.Equals("*", StringComparison.InvariantCulture)).Where(x => !IsIPAddress(x) & !IsLoopback(x)).ToArray();
+                setBlacklist = TxBlacklist.Lines.Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x) & !IsLoopback(x) & Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)).ToArray();
 
-                if (this.setSources.Count() == 0)
+                if (setSources.Count() == 0)
                 {
                     MessageBox.Show("No valid sources parsed!", "Nope, sorry. Nothing.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
@@ -559,16 +559,16 @@
                         using (FolderBrowserDialog saveToBrowse = new FolderBrowserDialog())
                         {
                             {
-                                saveToBrowse.Description = "Select a folder to save the this.generated hosts file";
+                                saveToBrowse.Description = "Select a folder to save the generated hosts file";
                                 saveToBrowse.RootFolder = Environment.SpecialFolder.Desktop;
                                 saveToBrowse.ShowNewFolderButton = true;
                                 if (saveToBrowse.ShowDialog() == DialogResult.OK)
                                 {
-                                    this.savePath = saveToBrowse.SelectedPath;
-                                    TxLogs.Text = this.LogDate(true) + "[Start]";
-                                    this.generated = string.Empty;
+                                    savePath = saveToBrowse.SelectedPath;
+                                    TxLogs.Text = LogDate(true) + "[Start]";
+                                    generated = string.Empty;
                                     LbCancel.Visible = true;
-                                    this.genCancel = false;
+                                    genCancel = false;
                                     BgGenerate.RunWorkerAsync();
                                 }
                             }
@@ -582,7 +582,7 @@
         {
             if (BgGenerate.IsBusy)
             {
-                this.genCancel = true;
+                genCancel = true;
                 LbCancel.Visible = false;
             }
         }
@@ -593,33 +593,33 @@
 
         private void BgGenerate_DoWork(object sender, DoWorkEventArgs e)
         {
-            this.startExec = DateTime.UtcNow;
-            this.errCount = 0;
+            startExec = DateTime.UtcNow;
+            errCount = 0;
             HashSet<string> downloadedUnified = new HashSet<string>();
 
             ////download sources
-            for (int i = 0; i <= this.setSources.Count() - 1; i++)
+            for (int i = 0; i <= setSources.Count() - 1; i++)
             {
                 ////cancel?
-                if (this.genCancel)
+                if (genCancel)
                 {
                     return;
                 }
 
-                string sourceUrl = this.setSources[i];
+                string sourceUrl = setSources[i];
 
                 ////use cache?
-                if (this.sourceCacheList.Any(x => x.URL == sourceUrl))
+                if (sourceCacheList.Any(x => x.URL == sourceUrl))
                 {
-                    HashSet<string> sourceDomains = new HashSet<string>(this.sourceCacheList.Where(x => x.URL == sourceUrl).Select(x => x.Domains).FirstOrDefault());
+                    HashSet<string> sourceDomains = new HashSet<string>(sourceCacheList.Where(x => x.URL == sourceUrl).Select(x => x.Domains).FirstOrDefault());
                     downloadedUnified.UnionWith(sourceDomains);
-                    TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Cached] (" + sourceDomains.Count.ToString("#,0", this.invarCulture) + ") " + sourceUrl + this.newLined + TxLogs.Text));
+                    TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Cached] (" + sourceDomains.Count.ToString("#,0", invarCulture) + ") " + sourceUrl + newLined + TxLogs.Text));
                 }
                 else
                 {
                     string downloadedData = string.Empty;
                     ////download
-                    TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Fetch] " + sourceUrl + this.newLined + TxLogs.Text));
+                    TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Fetch] " + sourceUrl + newLined + TxLogs.Text));
                     try
                     {
                         using (var clie = new WebClient())
@@ -630,21 +630,21 @@
                     }
                     catch (Exception ex)
                     {
-                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + TxLogs.Text));
-                        this.errCount += 1;
+                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + TxLogs.Text));
+                        errCount += 1;
                     }
 
                     if (downloadedData != string.Empty)
                     {
                         ////parse
-                        HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                        HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                         string[] tempDomains = downloadedHash.ToArray();
                         downloadedHash.Clear();
                         downloadedHash.TrimExcess();
                         for (int y = 0; y <= tempDomains.Count() - 1; y++)
                         {
                             ////cancel?
-                            if (this.genCancel)
+                            if (genCancel)
                             {
                                 return;
                             }
@@ -658,19 +658,19 @@
                             }
                             catch (Exception)
                             {
-                                if (this.setOptions[1])
+                                if (setOptions[1])
                                 {
-                                    TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] " + domStr + this.newLined + TxLogs.Text));
+                                    TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] " + domStr + newLined + TxLogs.Text));
                                 }
 
                                 inval = true;
-                                this.errCount += 1;
+                                errCount += 1;
                             }
 
                             if (!inval)
                             {
                                 string safeHost = urxed.DnsSafeHost;
-                                if (!this.IsLoopback(safeHost))
+                                if (!IsLoopback(safeHost))
                                 {
                                     downloadedHash.Add(safeHost);
                                 }
@@ -679,50 +679,50 @@
 
                         Array.Clear(tempDomains, 0, 0);
                         ////add/re-add to cache
-                        if (this.sourceCacheList.Any(x => x.URL == sourceUrl))
+                        if (sourceCacheList.Any(x => x.URL == sourceUrl))
                         {
-                            this.sourceCacheList.RemoveAll(x => x.URL == sourceUrl);
+                            sourceCacheList.RemoveAll(x => x.URL == sourceUrl);
                         }
 
-                        this.sourceCacheList.Add(new Modules.SourceCached { URL = sourceUrl, Domains = downloadedHash });
+                        sourceCacheList.Add(new Modules.SourceCached { URL = sourceUrl, Domains = downloadedHash });
                         ////unify
                         downloadedUnified.UnionWith(downloadedHash);
-                        TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + TxLogs.Text));
+                        TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Parsed] " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + TxLogs.Text));
                     }
                 }
             }
 
             ////remove whitelisted
-            if (this.setWhitelist.Count() > 0)
+            if (setWhitelist.Count() > 0)
             {
-                TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Clean] Whitelist" + this.newLined + TxLogs.Text));
+                TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Clean] Whitelist" + newLined + TxLogs.Text));
                 ////remove non-wildcard
-                downloadedUnified.ExceptWith(this.setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out this.urx)));
+                downloadedUnified.ExceptWith(setWhitelist.Where(x => Uri.TryCreate("http://" + x, UriKind.Absolute, out urx)));
                 downloadedUnified.TrimExcess();
 
                 ////remove wildcarded
-                if (this.setWhitelist.Where(x => x.Contains("*")).Count() > 0)
+                if (setWhitelist.Where(x => x.Contains("*")).Count() > 0)
                 {
-                    string whiteRegex = string.Join("|", this.setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
+                    string whiteRegex = string.Join("|", setWhitelist.Where(x => x.Contains("*")).Select(x => "(^" + Regex.Escape(x).Replace(@"\*", ".+?") + "$)").Distinct());
                     downloadedUnified.ExceptWith(downloadedUnified.Where(x => Regex.Match(x, whiteRegex, RegexOptions.IgnoreCase).Success).ToList());
                     downloadedUnified.TrimExcess();
                 }
 
                 ////parse url whitelist
-                if (this.setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Count() > 0)
+                if (setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
                 {
-                    string[] whitelistSources = this.setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Distinct().ToArray();
+                    string[] whitelistSources = setWhitelist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
                     for (int i = 0; i <= whitelistSources.Count() - 1; i++)
                     {
                         ////cancel?
-                        if (this.genCancel)
+                        if (genCancel)
                         {
                             return;
                         }
 
                         string whitelistUrl = whitelistSources[i];
                         string downloadedData = string.Empty;
-                        TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Fetch] Whitelist - " + whitelistUrl + this.newLined + TxLogs.Text));
+                        TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Fetch] Whitelist - " + whitelistUrl + newLined + TxLogs.Text));
                         try
                         {
                             using (var clie = new WebClient())
@@ -733,21 +733,21 @@
                         }
                         catch (Exception ex)
                         {
-                            TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + TxLogs.Text));
-                            this.errCount += 1;
+                            TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + TxLogs.Text));
+                            errCount += 1;
                         }
 
                         if (downloadedData != string.Empty)
                         {
                             ////parse
-                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                             string[] tempDomains = downloadedHash.ToArray();
                             downloadedHash.Clear();
                             downloadedHash.TrimExcess();
                             for (int y = 0; y <= tempDomains.Count() - 1; y++)
                             {
                                 ////cancel?
-                                if (this.genCancel)
+                                if (genCancel)
                                 {
                                     return;
                                 }
@@ -761,19 +761,19 @@
                                 }
                                 catch (Exception)
                                 {
-                                    if (this.setOptions[1])
+                                    if (setOptions[1])
                                     {
-                                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] Whitelist - " + domStr + this.newLined + TxLogs.Text));
+                                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] Whitelist - " + domStr + newLined + TxLogs.Text));
                                     }
 
                                     inval = true;
-                                    this.errCount += 1;
+                                    errCount += 1;
                                 }
 
                                 if (!inval)
                                 {
                                     string safeHost = urxed.DnsSafeHost;
-                                    if (!this.IsLoopback(safeHost))
+                                    if (!IsLoopback(safeHost))
                                     {
                                         downloadedHash.Add(safeHost);
                                     }
@@ -782,7 +782,7 @@
 
                             Array.Clear(tempDomains, 0, 0);
                             ////exclude
-                            TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + TxLogs.Text));
+                            TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Parsed] Whitelist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + TxLogs.Text));
                             downloadedUnified.ExceptWith(downloadedHash);
                         }
                     }
@@ -791,29 +791,29 @@
 
             ////remove duplicate blacklist
             HashSet<string> blacks = new HashSet<string>();
-            if (this.setBlacklist.Count() > 0)
+            if (setBlacklist.Count() > 0)
             {
-                TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Clean] Blacklist" + this.newLined + TxLogs.Text));
-                blacks = new HashSet<string>(this.setBlacklist);
-                Array.Clear(this.setBlacklist, 0, 0);
+                TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Clean] Blacklist" + newLined + TxLogs.Text));
+                blacks = new HashSet<string>(setBlacklist);
+                Array.Clear(setBlacklist, 0, 0);
                 blacks.ExceptWith(downloadedUnified);
-                this.setBlacklist = blacks.ToArray();
+                setBlacklist = blacks.ToArray();
 
                 ////parse url blacklist
-                if (this.setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Count() > 0)
+                if (setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Count() > 0)
                 {
-                    string[] blacklistSources = this.setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out this.urx)).Distinct().ToArray();
+                    string[] blacklistSources = setBlacklist.Where(x => Uri.TryCreate(x, UriKind.Absolute, out urx)).Distinct().ToArray();
                     for (int i = 0; i <= blacklistSources.Count() - 1; i++)
                     {
                         ////cancel?
-                        if (this.genCancel)
+                        if (genCancel)
                         {
                             return;
                         }
 
                         string blacklistUrl = blacklistSources[i];
                         string downloadedData = string.Empty;
-                        TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Fetch] Blacklist - " + blacklistUrl + this.newLined + TxLogs.Text));
+                        TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Fetch] Blacklist - " + blacklistUrl + newLined + TxLogs.Text));
                         try
                         {
                             using (var clie = new WebClient())
@@ -824,21 +824,21 @@
                         }
                         catch (Exception ex)
                         {
-                            TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(this.newLined, " ") + this.newLined + TxLogs.Text));
-                            this.errCount += 1;
+                            TxLogs.Invoke(new Action(() => TxLogs.Text = "> [" + ex.Source + "] " + ex.Message.Replace(newLined, " ") + newLined + TxLogs.Text));
+                            errCount += 1;
                         }
 
                         if (downloadedData != string.Empty)
                         {
                             ////parse
-                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { this.newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !this.IsIPAddress(x)));
+                            HashSet<string> downloadedHash = new HashSet<string>(downloadedData.Split(new string[] { newLined, "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => Regex.Replace(x.Replace("\t", " "), " {2,}", " ").Trim()).Select(x => Regex.Replace(x, @"\#(.+|$)", string.Empty).Trim()).Select(x => Regex.Replace(x, @"^.+ ", string.Empty).Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).Where(x => !IsIPAddress(x)));
                             string[] tempDomains = downloadedHash.ToArray();
                             downloadedHash.Clear();
                             downloadedHash.TrimExcess();
                             for (int y = 0; y <= tempDomains.Count() - 1; y++)
                             {
                                 ////cancel?
-                                if (this.genCancel)
+                                if (genCancel)
                                 {
                                     return;
                                 }
@@ -852,19 +852,19 @@
                                 }
                                 catch (Exception)
                                 {
-                                    if (this.setOptions[1])
+                                    if (setOptions[1])
                                     {
-                                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] Blacklist - " + domStr + this.newLined + TxLogs.Text));
+                                        TxLogs.Invoke(new Action(() => TxLogs.Text = "> [Invalid] Blacklist - " + domStr + newLined + TxLogs.Text));
                                     }
 
                                     inval = true;
-                                    this.errCount += 1;
+                                    errCount += 1;
                                 }
 
                                 if (!inval)
                                 {
                                     string safeHost = urxed.DnsSafeHost;
-                                    if (!this.IsLoopback(safeHost))
+                                    if (!IsLoopback(safeHost))
                                     {
                                         downloadedHash.Add(safeHost);
                                     }
@@ -873,7 +873,7 @@
 
                             Array.Clear(tempDomains, 0, 0);
                             ////exclude
-                            TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Parsed] Blacklist - " + downloadedHash.Count().ToString("#,0", this.invarCulture) + " valid domains!" + this.newLined + TxLogs.Text));
+                            TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Parsed] Blacklist - " + downloadedHash.Count().ToString("#,0", invarCulture) + " valid domains!" + newLined + TxLogs.Text));
                             blacks.UnionWith(downloadedHash);
                         }
                     }
@@ -882,16 +882,16 @@
 
             if (downloadedUnified.Count() == 0 & blacks.Count() == 0)
             {
-                TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Canceled] Nothing to generate!" + this.newLined + TxLogs.Text));
+                TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Canceled] Nothing to generate!" + newLined + TxLogs.Text));
                 return;
             }
 
             ////add targetIP
-            string tabSpace = (this.setOptions[0] ? "\t" : " ").ToString();
-            TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Merge] Target IP and " + (this.setOptions[0] ? "Tab" : "Whitespace").ToString() + this.newLined + TxLogs.Text));
-            if (this.setDPL == 1)
+            string tabSpace = (setOptions[0] ? "\t" : " ").ToString();
+            TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Merge] Target IP and " + (setOptions[0] ? "Tab" : "Whitespace").ToString() + newLined + TxLogs.Text));
+            if (setDPL == 1)
             {
-                downloadedUnified = new HashSet<string>(downloadedUnified.Select(x => this.setTargIP + tabSpace + x));
+                downloadedUnified = new HashSet<string>(downloadedUnified.Select(x => setTargIP + tabSpace + x));
             }
             else
             {
@@ -903,20 +903,20 @@
                 for (int i = 0; i <= unifiedTempCountIndex; i++)
                 {
                     ////cancel?
-                    if (this.genCancel)
+                    if (genCancel)
                     {
                         return;
                     }
 
                     artemp = artemp + " " + unifiedTemp[i];
-                    if ((i + 1) % this.setDPL == 0)
+                    if ((i + 1) % setDPL == 0)
                     {
-                        downloadedUnified.Add(this.setTargIP + tabSpace + artemp);
+                        downloadedUnified.Add(setTargIP + tabSpace + artemp);
                         artemp = string.Empty;
                     }
                     else if (i == unifiedTempCountIndex)
                     {
-                        downloadedUnified.Add(this.setTargIP + tabSpace + artemp);
+                        downloadedUnified.Add(setTargIP + tabSpace + artemp);
                         artemp = string.Empty;
                     }
                 }
@@ -925,23 +925,23 @@
             }
 
             ////finalize
-            TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Merge] Finalize list" + this.newLined + TxLogs.Text));
+            TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Merge] Finalize list" + newLined + TxLogs.Text));
             List<string> finalList = new List<string>
-   {
-    "# Entries: " + downloadedUnified.Count().ToString("#,0", this.invarCulture),
-    "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", this.invarCulture) + " UTC",
-    "# this.generated using github.com/Laicure/HostsZ",
-    string.Empty,
-    "# Sources: " + this.sourceCacheList.Where(x => this.setSources.Contains(x.URL)).Select(x => x.URL).Count().ToString("#,0", this.invarCulture)
-   };
-            finalList.AddRange(this.sourceCacheList.Where(x => this.setSources.Contains(x.URL)).Select(x => "# [" + x.Domains.Count().ToString("#,0", this.invarCulture) + "] " + x.URL));
+               {
+                "# Entries: " + downloadedUnified.Count().ToString("#,0", invarCulture),
+                "# As of " + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss", invarCulture) + " UTC",
+                "# generated using github.com/Laicure/HostsZ",
+                string.Empty,
+                "# Sources: " + sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => x.URL).Count().ToString("#,0", invarCulture)
+               };
+            finalList.AddRange(sourceCacheList.Where(x => setSources.Contains(x.URL)).Select(x => "# [" + x.Domains.Count().ToString("#,0", invarCulture) + "] " + x.URL));
             finalList.Add(string.Empty);
             finalList.AddRange(new string[] { "# Loopbacks", "127.0.0.1" + tabSpace + "localhost", "::1" + tabSpace + "localhost" });
             finalList.Add(string.Empty);
             if (blacks.Count() > 0)
             {
                 finalList.Add("# Blacklist");
-                finalList.AddRange(blacks.Select(x => this.setTargIP + tabSpace + x));
+                finalList.AddRange(blacks.Select(x => setTargIP + tabSpace + x));
                 finalList.Add(string.Empty);
             }
 
@@ -950,50 +950,50 @@
             finalList.Add("# End");
             finalList.Add(string.Empty);
 
-            this.generated = string.Join(this.newLined, finalList);
+            generated = string.Join(newLined, finalList);
 
-            if (this.errCount > 0)
+            if (errCount > 0)
             {
-                TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Error] Count: " + this.errCount.ToString("#,0", this.invarCulture) + this.newLined + TxLogs.Text));
+                TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Error] Count: " + errCount.ToString("#,0", invarCulture) + newLined + TxLogs.Text));
             }
 
-            TxLogs.Invoke(new Action(() => TxLogs.Text = this.LogDate(false) + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", this.invarCulture) + this.newLined + TxLogs.Text));
+            TxLogs.Invoke(new Action(() => TxLogs.Text = LogDate(false) + "[Count] Domains: " + downloadedUnified.Count().ToString("#,0", invarCulture) + newLined + TxLogs.Text));
         }
 
         private void BgGenerate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             LbCancel.Visible = false;
-            if (this.genCancel)
+            if (genCancel)
             {
-                TxLogs.Text = this.LogDate(false) + "[Canceled] Took: " + DateTime.UtcNow.Subtract(this.startExec).ToString().Substring(0, 11) + this.newLined + TxLogs.Text;
-                this.genCancel = false;
+                TxLogs.Text = LogDate(false) + "[Canceled] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + newLined + TxLogs.Text;
+                genCancel = false;
             }
             else
             {
-                TxLogs.Text = this.LogDate(false) + "[End] Took: " + DateTime.UtcNow.Subtract(this.startExec).ToString().Substring(0, 11) + this.newLined + TxLogs.Text;
+                TxLogs.Text = LogDate(false) + "[End] Took: " + DateTime.UtcNow.Subtract(startExec).ToString().Substring(0, 11) + newLined + TxLogs.Text;
             }
 
             ////set parsed Counts
-            LbSources.Text = "[" + this.setSources.Count().ToString("#,0", this.invarCulture) + "] Sources";
-            LbWhitelist.Text = "[" + this.setWhitelist.Count().ToString("#,0", this.invarCulture) + "] Whitelist";
-            LbBlacklist.Text = "[" + this.setBlacklist.Count().ToString("#,0", this.invarCulture) + "] Blacklist";
+            GbSources.Text = "[" + setSources.Count().ToString("#,0", invarCulture) + "] Sources";
+            GbWhitelist.Text = "[" + setWhitelist.Count().ToString("#,0", invarCulture) + "] Whitelist";
+            GbBlacklist.Text = "[" + setBlacklist.Count().ToString("#,0", invarCulture) + "] Blacklist";
 
-            if (this.generated != string.Empty)
+            if (generated != string.Empty)
             {
                 try
                 {
-                    string saveP = this.savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", this.invarCulture);
-                    File.WriteAllText(saveP, this.generated, System.Text.Encoding.ASCII);
+                    string saveP = savePath + @"\hosts " + DateTime.UtcNow.ToString("ffff", invarCulture);
+                    File.WriteAllText(saveP, generated, System.Text.Encoding.ASCII);
                     System.Diagnostics.Process.Start("explorer", "/select, " + saveP);
                 }
                 catch (Exception ex)
                 {
-                    TxLogs.Text = this.LogDate(false) + "[Error] " + ex.Source + ": " + ex.Message + this.newLined + TxLogs.Text;
+                    TxLogs.Text = LogDate(false) + "[Error] " + ex.Source + ": " + ex.Message + newLined + TxLogs.Text;
                 }
             }
             else
             {
-                TxLogs.Text = this.LogDate(false) + "[End] Nothing this.generated!" + this.newLined + TxLogs.Text;
+                TxLogs.Text = LogDate(false) + "[End] Nothing generated!" + newLined + TxLogs.Text;
             }
         }
 
@@ -1003,7 +1003,7 @@
 
         private string LogDate(bool withDate)
         {
-            return DateTime.UtcNow.ToString(withDate ? "yyyy-MM-dd HH:mm:ss" : "HH:mm:ss", this.invarCulture) + "> ";
+            return DateTime.UtcNow.ToString(withDate ? "yyyy-MM-dd HH:mm:ss" : "HH:mm:ss", invarCulture) + "> ";
         }
 
         private bool IsIPAddress(string input)
@@ -1013,7 +1013,7 @@
 
         private bool IsLoopback(string input)
         {
-            return Regex.Match(input, string.Join("|", this.setLoopbacks.Select(x => @"\b^" + Regex.Escape(x) + "$")), RegexOptions.IgnoreCase).Success;
+            return Regex.Match(input, string.Join("|", setLoopbacks.Select(x => @"\b^" + Regex.Escape(x) + "$")), RegexOptions.IgnoreCase).Success;
         }
 
         #endregion "Functions"

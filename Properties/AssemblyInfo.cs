@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CodeMock")]
 [assembly: AssemblyProduct("HostsZ")]
-[assembly: AssemblyCopyright("Copyright © 2020")]
-[assembly: AssemblyTrademark("CodeMock")]
+[assembly: AssemblyCopyright("Copyright © 2021")]
+[assembly: AssemblyTrademark("CodeCure")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: System.Resources.NeutralResourcesLanguage("en")]
-[assembly: AssemblyVersion("2020.7.28.15386")]
+[assembly: AssemblyVersion("2021.3.11.14075")]

@@ -48,4 +48,4 @@ Optional Parameter after _-auto_:
 * \-dpl<n>
 	* Indicates that it will generate <2~9> number of domains per line (e.g. -dpl4) to reduce the file size
 ---------
-###### Check [HostY_host](https://github.com/Laicure/HostsY_hosts) for the generated files
+###### Check [hosts](https://github.com/Laicure/hosts) for the generated files
